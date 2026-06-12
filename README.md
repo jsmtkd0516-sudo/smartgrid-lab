@@ -11,6 +11,12 @@
 - `assets/hero-smart-grid.png`: 생성형 이미지 기반 히어로 배경
 - `assets/members/`: 멤버 사진을 넣는 폴더
 - `assets/gallery/`: 연구실 활동 사진을 넣는 폴더
+- `LAB_PC_HANDOFF.md`: 연구실 컴퓨터에서 이어서 수정하고 배포하는 방법
+
+## 공개 주소
+
+- GitHub 저장소: https://github.com/jsmtkd0516-sudo/smartgrid-lab
+- GitHub Pages 주소: https://jsmtkd0516-sudo.github.io/smartgrid-lab/
 
 ## 내용 수정 방법
 
