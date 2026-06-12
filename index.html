@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Yonsei University Smartgrid Laboratory website concept for power systems and smart grid research."
+    />
+    <title>Yonsei Smartgrid Laboratory</title>
+    <link rel="preload" href="assets/hero-smart-grid.png" as="image" />
+    <script>
+      document.documentElement.classList.add("js-ready");
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header>
+      <a class="brand" href="#home" aria-label="Yonsei Smartgrid Laboratory home">
+        <span class="brand-mark">SG</span>
+        <span>
+          <strong>Smartgrid Lab</strong>
+          <small>Yonsei EEE</small>
+        </span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false" data-nav-toggle>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="site-nav" aria-label="Primary navigation" data-nav>
+        <a href="#about">About</a>
+        <a href="#research">Research</a>
+        <a href="#projects">Projects</a>
+        <a href="#publications">Publications</a>
+        <a href="#achievements">Achievements</a>
+        <a href="#members">Members</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="home" aria-label="Smartgrid Laboratory introduction">
+        <img class="hero-image" src="assets/hero-smart-grid.png" alt="스마트 전력망과 송전 인프라를 표현한 블루 톤 배경" />
+        <canvas class="grid-canvas" data-grid-canvas aria-hidden="true"></canvas>
+        <div class="hero-shade" aria-hidden="true"></div>
+
+        <div class="hero-content reveal">
+          <p class="eyebrow">Yonsei EEE · Smartgrid Laboratory</p>
+          <h1>Yonsei University Smartgrid Laboratory</h1>
+          <p class="hero-copy">
+            재생에너지, HVDC/FACTS, 계통 안정도, EMT 해석, 그리드포밍 컨버터를 중심으로
+            미래 전력망의 안정성과 유연성을 연구합니다.
+          </p>
+          <div class="hero-actions" aria-label="Main links">
+            <a class="btn btn-primary" href="#research">Research 보기</a>
+            <a class="btn btn-secondary" href="mailto:khur@yonsei.ac.kr">Join Us</a>
+          </div>
+        </div>
+
+        <div class="hero-metrics" aria-label="Laboratory highlights">
+          <div>
+            <strong>2010</strong>
+            <span>Yonsei Professor</span>
+          </div>
+          <div>
+            <strong>10+</strong>
+            <span>Research Areas</span>
+          </div>
+          <div>
+            <strong>IEEE</strong>
+            <span>Power Systems Research</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section about-section" id="about">
+        <div class="section-heading reveal">
+          <p class="eyebrow">About</p>
+          <h2>전력망 전환기의 핵심 문제를 다루는 스마트그리드 연구실</h2>
+          <p>
+            Smartgrid Laboratory는 전력전자 기반 송배전 제어, 재생에너지 계통연계,
+            측정 기반 동적 모델링, 전력품질, 계통 운영 및 계획을 연구합니다.
+          </p>
+        </div>
+
+        <div class="about-layout">
+          <article class="professor-panel reveal">
+            <div class="avatar" aria-hidden="true">KH</div>
+            <div>
+              <p class="panel-label">Principal Investigator</p>
+              <h3>Kyeon Hur</h3>
+              <p>Professor, School of Electrical and Electronic Engineering, Yonsei University</p>
+              <dl class="info-list">
+                <div>
+                  <dt>Email</dt>
+                  <dd><a href="mailto:khur@yonsei.ac.kr">khur@yonsei.ac.kr</a></dd>
+                </div>
+                <div>
+                  <dt>Office</dt>
+                  <dd>Engineering Building C626</dd>
+                </div>
+                <div>
+                  <dt>Education</dt>
+                  <dd>Ph.D., The University of Texas at Austin</dd>
+                </div>
+              </dl>
+            </div>
+          </article>
+
+          <div class="vision-list reveal">
+            <article>
+              <span class="topic-index">01</span>
+              <h3>Reliable Grid Operation</h3>
+              <p>고재생에너지 전력망의 안정도, 관성, 동특성 문제를 모델링하고 해석합니다.</p>
+            </article>
+            <article>
+              <span class="topic-index">02</span>
+              <h3>Power Electronics Integration</h3>
+              <p>HVDC, FACTS, MMC, 그리드포밍 컨버터의 제어와 상호작용을 연구합니다.</p>
+            </article>
+            <article>
+              <span class="topic-index">03</span>
+              <h3>Measurement-based Intelligence</h3>
+              <p>PMU, synchro-phasor, EMT 데이터를 활용해 계통 감시와 의사결정을 고도화합니다.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section research-section" id="research">
+        <div class="section-heading compact reveal">
+          <p class="eyebrow">Research</p>
+          <h2>Research Areas</h2>
+          <p>공식 연구분야를 현대적인 카드 구조로 재정리한 구성입니다.</p>
+        </div>
+
+        <div class="research-grid">
+          <article class="research-card reveal">
+            <span class="card-token">GFM</span>
+            <h3>Grid-forming Converter</h3>
+            <p>그리드포밍 컨버터의 모델링, 해석, 제어와 저관성 전력망 적용을 연구합니다.</p>
+          </article>
+          <article class="research-card reveal">
+            <span class="card-token">EMT</span>
+            <h3>EMT Modeling</h3>
+            <p>전력계통 해석을 위한 전자기 과도현상 모델링과 시뮬레이션 정확도를 다룹니다.</p>
+          </article>
+          <article class="research-card reveal">
+            <span class="card-token">HVDC</span>
+            <h3>MMC for HVDC and FACTS</h3>
+            <p>모듈러 멀티레벨 컨버터 기반 HVDC/FACTS의 모델링과 제어 전략을 설계합니다.</p>
+          </article>
+          <article class="research-card reveal">
+            <span class="card-token">PMU</span>
+            <h3>Synchro-phasor Applications</h3>
+            <p>스마트 송전망 감시, 분석, 제어를 위한 동기위상 측정 기반 응용을 개발합니다.</p>
+          </article>
+          <article class="research-card reveal">
+            <span class="card-token">LOAD</span>
+            <h3>Dynamic Load Modeling</h3>
+            <p>측정 기반 부하 동특성 모델링으로 전압 안정도와 단기 동특성 예측을 개선합니다.</p>
+          </article>
+          <article class="research-card reveal">
+            <span class="card-token">ESS</span>
+            <h3>Hybrid Energy Storage</h3>
+            <p>변동성 전원과 제어 가능 부하를 통합하기 위한 하이브리드 저장장치 운용을 연구합니다.</p>
+          </article>
+          <article class="research-card reveal">
+            <span class="card-token">PQ</span>
+            <h3>Power Quality Solutions</h3>
+            <p>고조파 필터, SVC, 능동필터를 활용한 전력품질 개선 방안을 설계합니다.</p>
+          </article>
+          <article class="research-card reveal">
+            <span class="card-token">EMS</span>
+            <h3>Home and Building EMS</h3>
+            <p>스마트미터링과 건물 에너지관리 시스템을 전력망 운영 관점에서 연결합니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section project-section" id="projects">
+        <div class="section-heading compact reveal">
+          <p class="eyebrow">Projects</p>
+          <h2>Active and Completed Projects</h2>
+          <p>연구과제는 스폰서, 기간, 상태별로 관리하기 좋은 리스트형 구조로 구성했습니다.</p>
+        </div>
+
+        <div class="project-layout">
+          <article class="project-feature reveal" data-featured-project></article>
+          <div class="project-list reveal" data-project-list></div>
+        </div>
+      </section>
+
+      <section class="section publication-section" id="publications">
+        <div class="section-heading compact reveal">
+          <p class="eyebrow">Publications</p>
+          <h2>Selected Publications</h2>
+          <p>연도와 주제로 빠르게 거를 수 있는 연구실 논문 아카이브 UI입니다.</p>
+        </div>
+
+        <div class="filter-bar reveal" aria-label="Publication filters">
+          <button class="filter-button is-active" type="button" data-filter="all">All</button>
+          <button class="filter-button" type="button" data-filter="hvdc">HVDC</button>
+          <button class="filter-button" type="button" data-filter="forecasting">Forecasting</button>
+          <button class="filter-button" type="button" data-filter="stability">Stability</button>
+          <button class="filter-button" type="button" data-filter="2023">2023</button>
+          <button class="filter-button" type="button" data-filter="2022">2022</button>
+          <button class="filter-button" type="button" data-filter="2021">2021</button>
+        </div>
+
+        <div class="publication-list" data-publication-list></div>
+      </section>
+
+      <section class="section achievements-section" id="achievements">
+        <div class="section-heading compact reveal">
+          <p class="eyebrow">Achievements</p>
+          <h2>Research Output and Lab Milestones</h2>
+          <p>수상, 특허, 기술이전, 주요 보도처럼 연구실 실적을 간단히 추가할 수 있는 영역입니다.</p>
+        </div>
+
+        <div class="achievement-grid" data-achievement-list></div>
+      </section>
+
+      <section class="section members-section" id="members">
+        <div class="section-heading compact reveal">
+          <p class="eyebrow">Members</p>
+          <h2>People</h2>
+          <p>교수, 박사과정, 석사과정, 졸업생을 한 화면에서 빠르게 파악하는 구조입니다.</p>
+        </div>
+
+        <div class="people-grid" data-member-list></div>
+        <div class="alumni-strip reveal" data-alumni-list></div>
+      </section>
+
+      <section class="section news-gallery-section" id="news">
+        <div class="section-heading compact reveal">
+          <p class="eyebrow">News and Gallery</p>
+          <h2>Lab Updates</h2>
+          <p>공지, 수상, 학회 발표, 연구실 활동 사진을 같은 흐름 안에서 볼 수 있게 구성했습니다.</p>
+        </div>
+
+        <div class="news-gallery-layout">
+          <div class="news-list reveal" data-news-list></div>
+          <div class="gallery-grid reveal" id="gallery" aria-label="Gallery preview" data-gallery-list></div>
+        </div>
+      </section>
+
+      <section class="section contact-section" id="contact">
+        <div class="contact-layout">
+          <div class="section-heading compact reveal">
+            <p class="eyebrow">Contact</p>
+            <h2>Join the Smartgrid Laboratory</h2>
+            <p>
+              전력계통, 스마트그리드, 전력전자 기반 송배전 제어 연구에 관심 있는 학생은
+              이메일로 연구 관심 분야와 이력서를 보내주세요.
+            </p>
+            <div class="contact-actions">
+              <a class="btn btn-primary" href="mailto:khur@yonsei.ac.kr">이메일 보내기</a>
+              <a class="text-link" href="https://smartgrid.yonsei.ac.kr/" target="_blank" rel="noreferrer">
+                Current Lab Site
+              </a>
+            </div>
+          </div>
+
+          <aside class="contact-card reveal" aria-label="Contact information">
+            <dl class="info-list stacked">
+              <div>
+                <dt>Email</dt>
+                <dd><a href="mailto:khur@yonsei.ac.kr">khur@yonsei.ac.kr</a></dd>
+              </div>
+              <div>
+                <dt>Lab Office</dt>
+                <dd>Engineering Research Park 246C, Yonsei University</dd>
+              </div>
+              <div>
+                <dt>Professor Office</dt>
+                <dd>Engineering Building C626, Yonsei University</dd>
+              </div>
+              <div>
+                <dt>Address</dt>
+                <dd>50 Yonsei-ro, Seodaemun-gu, Seoul 03722, Korea</dd>
+              </div>
+            </dl>
+            <a class="map-link" href="https://maps.google.com/?q=Yonsei+University+Engineering+Building+C626" target="_blank" rel="noreferrer">
+              Open Map
+            </a>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Yonsei University Smartgrid Laboratory</p>
+      <p>Concept website draft. Content should be reviewed before publication.</p>
+    </footer>
+
+    <script src="data/lab-data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
