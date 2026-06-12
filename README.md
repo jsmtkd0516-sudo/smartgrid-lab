@@ -6,7 +6,7 @@
 
 - `index.html`: 단일 페이지 연구실 홈페이지
 - `styles.css`: 반응형 레이아웃과 블루 계열 디자인 시스템
-- `script.js`: 모바일 내비게이션, 논문 필터, 스크롤 reveal, 히어로 네트워크 애니메이션
+- `script.js`: 모바일 내비게이션, 논문 필터, 스크롤 reveal, 전력계통 단선도 애니메이션, 숫자 카운터, 계통주파수 데모
 - `data/lab-data.js`: 멤버, 논문, 과제, 실적, 뉴스, 갤러리 데이터
 - `assets/hero-smart-grid.png`: 생성형 이미지 기반 히어로 배경
 - `assets/members/`: 멤버 사진을 넣는 폴더
@@ -27,6 +27,9 @@
 - 논문 추가: `publications` 배열에 `year`, `title`, `venue`, `tags`를 추가합니다.
 - 실적 추가: `achievements` 배열에 수상, 특허, 기술이전, 보도자료 등을 추가합니다.
 - 갤러리 사진 추가: 사진 파일을 `assets/gallery/`에 넣고 `gallery`의 `image`에 경로를 씁니다.
+- 뉴스 추가: `news` 배열에 `date`("2026.06" 형식), `category`, `title`, `description`을 적습니다. `image`에 사진 경로를 넣으면 썸네일이 붙습니다.
+
+첫 화면의 Researchers / Active Projects 숫자는 `members`와 `projects` 데이터에서 자동으로 계산되므로 따로 고칠 필요가 없습니다.
 
 사진이나 실적이 아직 없으면 빈 문자열(`""`)로 두면 됩니다. 웹사이트가 자동으로 자리표시자를 보여줍니다.
 

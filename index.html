@@ -32,6 +32,7 @@
 
       <nav class="site-nav" aria-label="Primary navigation" data-nav>
         <a href="#about">About</a>
+        <a href="#news">News</a>
         <a href="#research">Research</a>
         <a href="#projects">Projects</a>
         <a href="#publications">Publications</a>
@@ -48,6 +49,10 @@
         <div class="hero-shade" aria-hidden="true"></div>
 
         <div class="hero-content reveal">
+          <a class="recruit-pill" href="#contact">
+            <span class="recruit-dot" aria-hidden="true"></span>
+            Recruiting — 석박사통합 · 석사 · 학부연구생 상시 모집
+          </a>
           <p class="eyebrow">Yonsei EEE · Smartgrid Laboratory</p>
           <h1>Yonsei University Smartgrid Laboratory</h1>
           <p class="hero-copy">
@@ -62,19 +67,47 @@
 
         <div class="hero-metrics" aria-label="Laboratory highlights">
           <div>
-            <strong>2010</strong>
-            <span>Yonsei Professor</span>
+            <strong>Since <span data-stat="since">2010</span></strong>
+            <span>Yonsei Smartgrid Lab</span>
           </div>
           <div>
-            <strong>10+</strong>
-            <span>Research Areas</span>
+            <strong><span data-stat="members">0</span></strong>
+            <span>Researchers</span>
           </div>
           <div>
-            <strong>IEEE</strong>
-            <span>Power Systems Research</span>
+            <strong><span data-stat="projects">0</span></strong>
+            <span>Active Projects</span>
+          </div>
+          <div class="metric-freq">
+            <strong><span data-freq-value>60.000</span> <em>Hz</em></strong>
+            <span>Grid Frequency · Demo</span>
+            <canvas class="freq-canvas" data-freq-canvas aria-hidden="true"></canvas>
           </div>
         </div>
       </section>
+
+      <nav class="quick-tiles" aria-label="Quick links">
+        <a class="quick-tile tile-a" href="#members">
+          <span class="tile-label">Members</span>
+          <strong>연구실 구성원</strong>
+          <span class="tile-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="quick-tile tile-b" href="#publications">
+          <span class="tile-label">Publications</span>
+          <strong>논문 실적</strong>
+          <span class="tile-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="quick-tile tile-c" href="#projects">
+          <span class="tile-label">Projects</span>
+          <strong>연구 과제</strong>
+          <span class="tile-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="quick-tile tile-d" href="#contact">
+          <span class="tile-label">Join Us</span>
+          <strong>대학원생 모집</strong>
+          <span class="tile-arrow" aria-hidden="true">&rarr;</span>
+        </a>
+      </nav>
 
       <section class="section about-section" id="about">
         <div class="section-heading reveal">
@@ -127,6 +160,19 @@
               <p>PMU, synchro-phasor, EMT 데이터를 활용해 계통 감시와 의사결정을 고도화합니다.</p>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section class="section news-gallery-section" id="news">
+        <div class="section-heading compact reveal">
+          <p class="eyebrow">News and Activity</p>
+          <h2>Lab Updates</h2>
+          <p>수상, 학회 발표, 공지, 연구실 활동 사진을 같은 흐름 안에서 볼 수 있게 구성했습니다.</p>
+        </div>
+
+        <div class="news-gallery-layout">
+          <div class="news-list reveal" data-news-list></div>
+          <div class="gallery-grid reveal" id="gallery" aria-label="Gallery preview" data-gallery-list></div>
         </div>
       </section>
 
@@ -235,19 +281,6 @@
         <div class="alumni-strip reveal" data-alumni-list></div>
       </section>
 
-      <section class="section news-gallery-section" id="news">
-        <div class="section-heading compact reveal">
-          <p class="eyebrow">News and Gallery</p>
-          <h2>Lab Updates</h2>
-          <p>공지, 수상, 학회 발표, 연구실 활동 사진을 같은 흐름 안에서 볼 수 있게 구성했습니다.</p>
-        </div>
-
-        <div class="news-gallery-layout">
-          <div class="news-list reveal" data-news-list></div>
-          <div class="gallery-grid reveal" id="gallery" aria-label="Gallery preview" data-gallery-list></div>
-        </div>
-      </section>
-
       <section class="section contact-section" id="contact">
         <div class="contact-layout">
           <div class="section-heading compact reveal">
@@ -291,6 +324,12 @@
         </div>
       </section>
     </main>
+
+    <div class="affiliation-strip" aria-label="Affiliations">
+      <span>YONSEI UNIVERSITY</span>
+      <span>COLLEGE OF ENGINEERING</span>
+      <span>SCHOOL OF ELECTRICAL &amp; ELECTRONIC ENGINEERING</span>
+    </div>
 
     <footer class="site-footer">
       <p>Yonsei University Smartgrid Laboratory</p>

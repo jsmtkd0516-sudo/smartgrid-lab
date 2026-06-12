@@ -163,26 +163,39 @@ window.labData = {
 
   alumni: ["KERI", "KEPCO", "Samsung Electronics", "Hyundai Electric", "KGFM", "Add alumni"],
 
+  /*
+    news 항목 작성법:
+    - date: "2026.06" 처럼 적으면 뉴스 카드에 크게 표시됩니다 (비워도 됨)
+    - image: 썸네일 사진 경로 (예: "assets/gallery/award.jpg", 없으면 "")
+  */
   news: [
     {
+      date: "2026.06",
       category: "Research",
       title: "Grid-forming and converter-rich power system studies",
       description: "인버터 기반 설비 확대에 따른 전력망 안정도와 정밀 해석 기술을 고도화합니다.",
+      image: "",
     },
     {
+      date: "2026.05",
       category: "Publication",
       title: "Selected IEEE and EPSR papers updated",
       description: "HVDC, EMT simulation, forecasting, power grid dynamics 관련 대표 논문을 정리했습니다.",
+      image: "",
     },
     {
+      date: "2026.03",
       category: "Recruiting",
       title: "Graduate students interested in power systems are welcome",
       description: "전력계통, 전력전자, AI 기반 운영, 최적화 연구에 관심 있는 학생을 기다립니다.",
+      image: "",
     },
     {
+      date: "",
       category: "Add",
       title: "새 소식 추가 자리",
       description: "학회 발표, 논문 게재, 수상, 연구실 행사 소식을 여기에 넣으세요.",
+      image: "",
       empty: true,
     },
   ],
