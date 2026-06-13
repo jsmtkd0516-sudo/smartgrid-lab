@@ -1,4 +1,4 @@
-# Smartgrid Lab Website — Agent Guide
+# Smartgrid Lab Website - Agent Guide
 
 연세대학교 전기전자공학과 허견 교수님 Smartgrid Laboratory 홈페이지.
 빌드 도구 없는 순수 정적 사이트(HTML/CSS/JS)이며, GitHub Pages로 배포된다.
@@ -11,10 +11,13 @@
 
 | 파일 | 역할 |
 | --- | --- |
-| `data/lab-data.js` | **모든 콘텐츠 데이터** (멤버, 논문, 과제, 실적, 뉴스, 갤러리). 내용 수정은 거의 항상 이 파일만 건드리면 된다 |
-| `index.html` | 페이지 구조. 섹션 순서: Hero → Quick tiles → About → News → Research → Projects → Publications → Achievements → Members → Contact |
+| `data/lab-data.js` | **모든 콘텐츠 데이터** (멤버·졸업생·논문·과제·특허·뉴스·갤러리). 내용 수정은 거의 항상 이 파일만 |
+| `*.html` (14개 멀티 페이지) | `index.html`(Home) · `overview`·`milestones`·`contact` · `research`·`projects`·`collaborators` · `professor`·`members`·`alumni` · `publications`·`patents` · `news`·`gallery` |
+| `chrome.js` | 모든 페이지 공통 헤더(호버 드롭다운 메뉴)·페이지 배너·푸터·favicon을 한 곳에서 주입. 메뉴 변경은 이 파일의 `NAV` 배열만 |
 | `styles.css` | 디자인 시스템. `:root` CSS 변수(블루 계열 팔레트), 반응형 분기점 1040/820/600px |
-| `script.js` | `lab-data.js`를 DOM으로 렌더링 + 전력계통 단선도 캔버스 애니메이션 + 숫자 카운터 + 60Hz 주파수 데모 |
+| `script.js` | `lab-data.js`를 각 페이지 DOM으로 렌더링 + 히어로 전력계통 단선도 캔버스 + 숫자 카운터 + 60Hz 데모 + 논문 BibTeX 복사 |
+| `editor.html` | 브라우저에서 여는 로컬 콘텐츠 편집기. 뉴스, 멤버, 과제, 논문, 실적, 갤러리 데이터를 수정하고 `data/lab-data.js`를 저장/다운로드 |
+| `publish-site.cmd`, `publish-site.ps1` | 편집 후 변경 목록 확인 → 커밋 → push까지 진행하는 Windows용 배포 보조 스크립트 |
 | `LAB_PC_HANDOFF.md` | 연구실 컴퓨터에서 받기/수정/배포하는 사람용 안내서 |
 
 ## 콘텐츠 수정 규칙 (lab-data.js)
@@ -23,6 +26,8 @@
 - 사진: 멤버는 `assets/members/`, 갤러리·뉴스 썸네일은 `assets/gallery/`에 넣고 경로를 적는다. 빈 문자열 `""`이면 자동 자리표시자.
 - `news` 항목: `date`("2026.06" 형식), `category`, `title`, `description`, `image`(선택).
 - 히어로의 Researchers / Active Projects 카운터는 `members`(empty 제외)와 `projects`(status가 Active인 것 + featuredProject)에서 **자동 집계**된다. 숫자를 직접 고치지 말 것.
+- 코드에 익숙하지 않은 사용자는 `py -m http.server 5173` 실행 후 `http://localhost:5173/editor.html`에서 콘텐츠를 수정한다.
+- 편집 후 GitHub Pages에 올릴 때는 `publish-site.cmd`를 실행한다. 이 스크립트는 변경 목록을 보여주고 `y` 확인을 받은 뒤에만 `git add --all`, `git commit`, `git push`를 수행한다.
 
 ## 코드 수정 시 주의
 

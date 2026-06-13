@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="News and activity — Yonsei University Smartgrid Laboratory." />
+    <title>News · Yonsei Smartgrid Laboratory</title>
+    <script>
+      document.documentElement.classList.add("js-ready");
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header data-site-header></header>
+
+    <main>
+      <section class="section news-gallery-section">
+        <p class="page-lead reveal">수상, 학회 발표, 공지, 연구실 활동 소식을 시간 순으로 정리했습니다.</p>
+        <div class="news-list news-page-list reveal" data-news-list></div>
+      </section>
+    </main>
+
+    <div data-site-footer></div>
+
+    <script src="data/lab-data.js"></script>
+    <script src="chrome.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

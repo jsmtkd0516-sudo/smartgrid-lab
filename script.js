@@ -1,7 +1,4 @@
 const labData = window.labData ?? {};
-const header = document.querySelector("[data-header]");
-const nav = document.querySelector("[data-nav]");
-const navToggle = document.querySelector("[data-nav-toggle]");
 const canvas = document.querySelector("[data-grid-canvas]");
 
 const escapeHtml = (value = "") =>
@@ -11,16 +8,6 @@ const escapeHtml = (value = "") =>
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
-
-const initials = (name = "") => {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (!parts.length) return "SG";
-  return parts
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-};
 
 const renderFeaturedProject = () => {
   const target = document.querySelector("[data-featured-project]");
@@ -56,20 +43,43 @@ const renderPublications = () => {
   const target = document.querySelector("[data-publication-list]");
   if (!target) return;
 
+  // 보유 필드(제목·저자·게재지·연도)로 BibTeX 한 항목을 생성.
+  const toBibtex = (item) => {
+    const first = (item.authors || "Hur").split(",")[0].replace(/[^A-Za-z]/g, "") || "ref";
+    const yr = (String(item.year).match(/\d{4}/) || [""])[0];
+    const key = (first + yr).toLowerCase() || "ref";
+    const journal = (item.venue || "").replace(/\s*\([^)]*\)\s*$/, "");
+    const lines = ["@article{" + key + ","];
+    lines.push("  title   = {" + item.title + "},");
+    if (item.authors) lines.push("  author  = {" + item.authors + "},");
+    if (journal) lines.push("  journal = {" + journal + "},");
+    if (yr) lines.push("  year    = {" + yr + "}");
+    lines.push("}");
+    return lines.join("\n");
+  };
+
   target.innerHTML = (labData.publications ?? [])
-    .map(
-      (item) => `
+    .map((item) => {
+      const actions = item.empty
+        ? ""
+        : `<div class="pub-actions">
+            ${item.doi ? `<a class="pub-link" href="${escapeHtml(item.doi)}" target="_blank" rel="noreferrer">DOI</a>` : ""}
+            <button class="pub-bibtex" type="button" data-bib="${escapeHtml(toBibtex(item))}">BibTeX</button>
+          </div>`;
+      return `
         <article class="publication-item reveal ${item.empty ? "empty-card" : ""}" data-tags="${escapeHtml(
           (item.tags ?? []).join(" ")
         )}">
           <time>${escapeHtml(item.year)}</time>
           <div>
             <h3>${escapeHtml(item.title)}</h3>
+            ${item.authors ? `<p class="pub-authors">${escapeHtml(item.authors)}</p>` : ""}
             <p>${escapeHtml(item.venue)}</p>
+            ${actions}
           </div>
         </article>
-      `
-    )
+      `;
+    })
     .join("");
 };
 
@@ -91,37 +101,149 @@ const renderAchievements = () => {
     .join("");
 };
 
+// 사진이 없을 때 보여줄 "얼굴 들어갈 자리" 자리표시자 (실제 사진과 같은 크기/모양).
+const photoSlot = (name, empty) => `
+  <span class="person-photo person-photo-empty ${empty ? "is-add" : ""}" role="img" aria-label="${escapeHtml(
+    name
+  )} 사진 자리">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="8.5" r="3.6" />
+      <path d="M5 19.4c0-3.7 3.2-5.7 7-5.7s7 2 7 5.7" />
+    </svg>
+  </span>
+`;
+
+const LINK_ICONS = {
+  email:
+    '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
+  scholar:
+    '<svg viewBox="0 0 24 24"><path d="M12 4 2 9l10 5 10-5-10-5Z"/><path d="M6 11.5V16c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.5"/></svg>',
+  github:
+    '<svg viewBox="0 0 24 24"><path d="M12 1.5a10.5 10.5 0 0 0-3.32 20.46c.52.1.71-.23.71-.5v-1.96C6.5 20 5.9 18.2 5.9 18.2c-.46-1.17-1.12-1.48-1.12-1.48-.92-.63.07-.62.07-.62 1.02.07 1.55 1.05 1.55 1.05.9 1.55 2.37 1.1 2.95.84.09-.66.35-1.1.64-1.36-2.25-.26-4.62-1.13-4.62-5.02 0-1.11.4-2.02 1.04-2.73-.1-.26-.45-1.3.1-2.7 0 0 .85-.27 2.78 1.04a9.6 9.6 0 0 1 5.06 0c1.93-1.31 2.78-1.04 2.78-1.04.55 1.4.2 2.44.1 2.7.65.71 1.04 1.62 1.04 2.73 0 3.9-2.38 4.76-4.64 5.01.36.32.69.94.69 1.9v2.82c0 .27.18.6.71.5A10.5 10.5 0 0 0 12 1.5Z"/></svg>',
+};
+
+// 링크가 있으면 활성 아이콘, 없으면 점선 자리표시 아이콘.
+const linkIcon = (type, href) => {
+  const cls = type === "github" ? "person-link gh" : "person-link";
+  const svg = LINK_ICONS[type];
+  if (href) {
+    return `<a class="${cls}" href="${escapeHtml(href)}" target="_blank" rel="noreferrer" aria-label="${type}">${svg}</a>`;
+  }
+  return `<span class="${cls} is-empty" aria-hidden="true">${svg}</span>`;
+};
+
+const memberCard = (person) => {
+  const photo = person.photo
+    ? `<img class="person-photo" src="${escapeHtml(person.photo)}" alt="${escapeHtml(person.name)} profile photo" />`
+    : photoSlot(person.name, person.empty);
+
+  // 값이 있는 링크만 활성 아이콘으로 표시 (이메일은 mailto로).
+  const links = person.links ?? {};
+  const parts = [];
+  if (links.email) parts.push(linkIcon("email", "mailto:" + links.email));
+  if (links.scholar) parts.push(linkIcon("scholar", links.scholar));
+  if (links.github) parts.push(linkIcon("github", links.github));
+  const linkRow = parts.length ? `<div class="person-links">${parts.join("")}</div>` : "";
+
+  return `
+    <article class="person-card reveal ${person.empty ? "empty-card" : ""}">
+      ${photo}
+      <div class="person-info">
+        <h3>${escapeHtml(person.name)}</h3>
+        <p>${escapeHtml(person.role)}</p>
+        <small>${escapeHtml(person.interest)}</small>
+        ${linkRow}
+      </div>
+    </article>
+  `;
+};
+
 const renderMembers = () => {
   const target = document.querySelector("[data-member-list]");
   if (!target) return;
 
-  target.innerHTML = (labData.members ?? [])
-    .map((person) => {
-      const photo = person.photo
-        ? `<img class="person-photo" src="${escapeHtml(person.photo)}" alt="${escapeHtml(person.name)} profile photo" />`
-        : `<span class="avatar small ${person.empty ? "empty-photo" : ""}">${escapeHtml(initials(person.name))}</span>`;
+  // 교수(lead)는 Professor 페이지에서 따로 보여주므로 제외하고, 나머지는 과정(role)별로 묶는다.
+  const people = (labData.members ?? []).filter((person) => !person.lead);
+  const real = people.filter((person) => !person.empty);
+  const adds = people.filter((person) => person.empty);
 
-      return `
-        <article class="person-card reveal ${person.lead ? "lead" : ""} ${person.empty ? "empty-card" : ""}">
-          ${photo}
-          <h3>${escapeHtml(person.name)}</h3>
-          <p>${escapeHtml(person.role)}</p>
-          <small>${escapeHtml(person.interest)}</small>
-        </article>
-      `;
-    })
+  const order = [];
+  const byRole = new Map();
+  real.forEach((person) => {
+    if (!byRole.has(person.role)) {
+      byRole.set(person.role, []);
+      order.push(person.role);
+    }
+    byRole.get(person.role).push(person);
+  });
+
+  let html = order
+    .map(
+      (role) => `
+        <div class="people-group">
+          <h3 class="people-group-title">${escapeHtml(role)}</h3>
+          <div class="people-grid">${byRole.get(role).map(memberCard).join("")}</div>
+        </div>
+      `
+    )
     .join("");
+
+  if (adds.length) {
+    html += `
+      <div class="people-group">
+        <h3 class="people-group-title is-muted">멤버 추가 자리</h3>
+        <div class="people-grid">${adds.map(memberCard).join("")}</div>
+      </div>
+    `;
+  }
+
+  target.innerHTML = html;
 };
 
 const renderAlumni = () => {
   const target = document.querySelector("[data-alumni-list]");
   if (!target) return;
 
-  const alumni = labData.alumni ?? [];
-  target.innerHTML = `
-    <strong>Alumni Network</strong>
-    ${alumni.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
-  `;
+  // 진출처 문자열로 진로 유형을 분류 (기업/학계/연구소/공공).
+  const classify = (to) => {
+    if (!to) return null;
+    const t = to.toLowerCase();
+    if (/university|professor|polytechnic|kaist|postdoc|univ\.?\b/.test(t)) return { cls: "academia", label: "Academia" };
+    if (/keri|kitech|krri|kepri|research institute/.test(t)) return { cls: "research", label: "Research" };
+    if (/navy|air force|army/.test(t)) return { cls: "public", label: "Public" };
+    return { cls: "industry", label: "Industry" };
+  };
+
+  const data = labData.alumni ?? {};
+  const groups = [
+    { title: "Ph.D. Alumni", list: data.phd ?? [] },
+    { title: "M.S. Alumni", list: data.ms ?? [] },
+  ];
+
+  target.innerHTML = groups
+    .filter((group) => group.list.length)
+    .map(
+      (group) => `
+        <div class="alumni-group">
+          <h3 class="people-group-title">${escapeHtml(group.title)}</h3>
+          <ul class="alumni-list">
+            ${group.list
+              .map((a) => {
+                const ty = classify(a.to);
+                return `
+                <li>
+                  <span class="al-name">${escapeHtml(a.name)}</span>
+                  ${a.year ? `<span class="al-year">${escapeHtml(a.year)}</span>` : ""}
+                  ${ty ? `<span class="al-type ${ty.cls}">${ty.label}</span>` : ""}
+                  ${a.to ? `<span class="al-to">${escapeHtml(a.to)}</span>` : ""}
+                </li>`;
+              })
+              .join("")}
+          </ul>
+        </div>
+      `
+    )
+    .join("");
 };
 
 const renderNews = () => {
@@ -137,7 +259,7 @@ const renderNews = () => {
       return `
         <article class="news-item ${item.image ? "has-thumb" : ""} ${item.empty ? "empty-card" : ""}">
           ${thumb}
-          <div>
+          <div class="news-body">
             <p class="news-meta">
               ${item.date ? `<time>${escapeHtml(item.date)}</time>` : ""}
               <span class="news-category">${escapeHtml(item.category)}</span>
@@ -173,6 +295,43 @@ const renderGallery = () => {
     .join("");
 };
 
+const renderPatents = () => {
+  const target = document.querySelector("[data-patent-list]");
+  if (!target) return;
+
+  const data = labData.patents ?? {};
+  const groups = [
+    { title: "International Patents", list: data.international ?? [] },
+    { title: "Domestic Patents (국내)", list: data.domestic ?? [] },
+  ];
+
+  target.innerHTML = groups
+    .filter((group) => group.list.length)
+    .map(
+      (group) => `
+        <div class="patent-group">
+          <h3 class="people-group-title">${escapeHtml(group.title)}</h3>
+          <div class="patent-list">
+            ${group.list
+              .map(
+                (p) => `
+                <article class="patent-item">
+                  <h4>${escapeHtml(p.title)}</h4>
+                  <div class="patent-meta">
+                    ${p.no ? `<span class="patent-no">${escapeHtml(p.no)}</span>` : ""}
+                    ${p.date ? `<span>${escapeHtml(p.date)}</span>` : ""}
+                    ${p.inventors ? `<span>${escapeHtml(p.inventors)}</span>` : ""}
+                  </div>
+                </article>`
+              )
+              .join("")}
+          </div>
+        </div>
+      `
+    )
+    .join("");
+};
+
 const renderContent = () => {
   renderFeaturedProject();
   renderProjects();
@@ -180,28 +339,9 @@ const renderContent = () => {
   renderAchievements();
   renderMembers();
   renderAlumni();
+  renderPatents();
   renderNews();
   renderGallery();
-};
-
-const setupNavigation = () => {
-  navToggle?.addEventListener("click", () => {
-    const isOpen = nav?.classList.toggle("is-open");
-    document.body.classList.toggle("nav-open", Boolean(isOpen));
-    navToggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
-  });
-
-  nav?.addEventListener("click", (event) => {
-    if (event.target instanceof HTMLAnchorElement) {
-      nav.classList.remove("is-open");
-      document.body.classList.remove("nav-open");
-      navToggle?.setAttribute("aria-expanded", "false");
-    }
-  });
-
-  window.addEventListener("scroll", () => {
-    header?.classList.toggle("is-scrolled", window.scrollY > 20);
-  });
 };
 
 const setupPublicationFilters = () => {
@@ -281,68 +421,6 @@ const setupHeroStats = () => {
     };
     window.requestAnimationFrame(step);
   });
-};
-
-const setupFrequencyMeter = () => {
-  const valueEl = document.querySelector("[data-freq-value]");
-  const freqCanvas = document.querySelector("[data-freq-canvas]");
-  if (!valueEl) return;
-
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    valueEl.textContent = "60.000";
-    return;
-  }
-
-  const ctx = freqCanvas?.getContext("2d");
-  const history = [];
-  const capacity = 90;
-  let frequency = 60;
-  let tick = 0;
-  let width = 0;
-  let height = 0;
-
-  const resize = () => {
-    if (!freqCanvas || !ctx) return;
-    const ratio = window.devicePixelRatio || 1;
-    width = freqCanvas.offsetWidth;
-    height = freqCanvas.offsetHeight;
-    freqCanvas.width = Math.floor(width * ratio);
-    freqCanvas.height = Math.floor(height * ratio);
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-  };
-
-  const draw = () => {
-    // 60 Hz 주변을 작게 출렁이는 모사 신호 (평균 회귀 랜덤워크)
-    frequency += (60 - frequency) * 0.02 + (Math.random() - 0.5) * 0.0045;
-    frequency = Math.min(60.05, Math.max(59.95, frequency));
-
-    tick += 1;
-    if (tick % 4 === 0) {
-      history.push(frequency);
-      if (history.length > capacity) history.shift();
-    }
-    if (tick % 9 === 0) valueEl.textContent = frequency.toFixed(3);
-
-    if (ctx && width > 0 && history.length > 1) {
-      ctx.clearRect(0, 0, width, height);
-      ctx.beginPath();
-      history.forEach((sample, index) => {
-        const x = (index / (capacity - 1)) * width;
-        const y = height / 2 - ((sample - 60) / 0.05) * (height / 2 - 1);
-        if (index === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.strokeStyle = "rgba(127, 232, 255, 0.9)";
-      ctx.lineWidth = 1.4;
-      ctx.stroke();
-    }
-
-    window.requestAnimationFrame(draw);
-  };
-
-  resize();
-  window.addEventListener("resize", resize);
-  draw();
 };
 
 const setupHeroCanvas = () => {
@@ -550,10 +628,23 @@ const setupHeroCanvas = () => {
   });
 };
 
+const setupPublicationActions = () => {
+  document.querySelectorAll(".pub-bibtex").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const text = btn.dataset.bib || "";
+      if (navigator.clipboard) navigator.clipboard.writeText(text);
+      const label = btn.textContent;
+      btn.textContent = "Copied!";
+      window.setTimeout(() => {
+        btn.textContent = label;
+      }, 1500);
+    });
+  });
+};
+
 renderContent();
-setupNavigation();
 setupPublicationFilters();
+setupPublicationActions();
 setupReveal();
 setupHeroStats();
-setupFrequencyMeter();
 setupHeroCanvas();

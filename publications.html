@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="International journals and magazines — Yonsei University Smartgrid Laboratory." />
+    <title>Journals · Yonsei Smartgrid Laboratory</title>
+    <script>
+      document.documentElement.classList.add("js-ready");
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header data-site-header></header>
+
+    <main>
+      <section class="section publication-section">
+        <p class="page-lead reveal">연도와 주제로 빠르게 거를 수 있는 연구실 논문 아카이브입니다.</p>
+
+        <div class="filter-bar reveal" aria-label="Publication filters">
+          <button class="filter-button is-active" type="button" data-filter="all">All</button>
+          <button class="filter-button" type="button" data-filter="recent">Recent</button>
+          <button class="filter-button" type="button" data-filter="2023">2023</button>
+          <button class="filter-button" type="button" data-filter="2022">2022</button>
+          <button class="filter-button" type="button" data-filter="2021">2021</button>
+          <button class="filter-button" type="button" data-filter="2020">2020</button>
+          <button class="filter-button" type="button" data-filter="2019">2019</button>
+          <button class="filter-button" type="button" data-filter="2018">2018</button>
+          <button class="filter-button" type="button" data-filter="earlier">2017 &amp; earlier</button>
+        </div>
+
+        <div class="publication-list" data-publication-list></div>
+      </section>
+    </main>
+
+    <div data-site-footer></div>
+
+    <script src="data/lab-data.js"></script>
+    <script src="chrome.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

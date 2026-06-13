@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Smartgrid Lab Content Editor</title>
+    <style>
+      :root {
+        --ink: #142235;
+        --muted: #637284;
+        --paper: #f5f7fa;
+        --surface: #ffffff;
+        --line: #d9e0e8;
+        --blue: #145fbb;
+        --blue-dark: #0b315f;
+        --good: #087e68;
+        --warn: #9a650f;
+        --radius: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.55;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .app-shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-rows: auto 1fr;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: center;
+        padding: 20px clamp(18px, 4vw, 44px);
+        border-bottom: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .topbar h1 {
+        margin: 0;
+        font-size: clamp(1.35rem, 2.4vw, 2rem);
+        line-height: 1.15;
+      }
+
+      .topbar p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      .top-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 38px;
+        padding: 0 13px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        color: var(--ink);
+        font-weight: 750;
+        transition:
+          background 160ms ease,
+          border-color 160ms ease,
+          transform 160ms ease;
+      }
+
+      .button:hover {
+        border-color: #aebdca;
+        background: #f8fafc;
+        transform: translateY(-1px);
+      }
+
+      .button.primary {
+        border-color: var(--blue);
+        background: var(--blue);
+        color: #fff;
+      }
+
+      .button.danger {
+        border-color: #d9b6b6;
+        color: #9b2525;
+      }
+
+      .button.small {
+        min-height: 32px;
+        padding: 0 10px;
+        font-size: 0.86rem;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 230px minmax(0, 1fr);
+        min-height: 0;
+      }
+
+      .sidebar {
+        border-right: 1px solid var(--line);
+        background: #eef2f6;
+        padding: 16px;
+      }
+
+      .nav-list {
+        display: grid;
+        gap: 6px;
+      }
+
+      .nav-list button {
+        width: 100%;
+        min-height: 38px;
+        padding: 0 12px;
+        border: 1px solid transparent;
+        border-radius: var(--radius);
+        background: transparent;
+        color: var(--muted);
+        text-align: left;
+        font-weight: 760;
+      }
+
+      .nav-list button.is-active {
+        border-color: var(--line);
+        background: #fff;
+        color: var(--blue-dark);
+      }
+
+      .sidebar-note {
+        margin-top: 18px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.64);
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .workspace {
+        min-width: 0;
+        padding: clamp(18px, 3vw, 34px);
+      }
+
+      .status {
+        min-height: 40px;
+        margin-bottom: 16px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .status.good {
+        border-color: rgba(8, 126, 104, 0.25);
+        color: var(--good);
+        background: #f2fbf8;
+      }
+
+      .status.warn {
+        border-color: rgba(154, 101, 15, 0.28);
+        color: var(--warn);
+        background: #fff9ec;
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 16px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+      }
+
+      .section-head p {
+        margin: 4px 0 0;
+        color: var(--muted);
+      }
+
+      .editor-grid {
+        display: grid;
+        grid-template-columns: minmax(260px, 0.42fr) minmax(360px, 1fr);
+        gap: 16px;
+        align-items: start;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--surface);
+      }
+
+      .panel-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .item-list {
+        display: grid;
+        max-height: calc(100vh - 260px);
+        overflow: auto;
+      }
+
+      .item-button {
+        display: grid;
+        gap: 3px;
+        width: 100%;
+        padding: 12px;
+        border: 0;
+        border-bottom: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        text-align: left;
+      }
+
+      .item-button:hover,
+      .item-button.is-active {
+        background: #f2f7fc;
+      }
+
+      .item-button strong {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .item-button span {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .form-panel {
+        padding: 18px;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+
+      .field.inline {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .field label {
+        color: var(--blue-dark);
+        font-size: 0.86rem;
+        font-weight: 800;
+      }
+
+      .field small {
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      input[type="text"],
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+        color: var(--ink);
+      }
+
+      input[type="text"] {
+        min-height: 40px;
+        padding: 0 11px;
+      }
+
+      textarea {
+        min-height: 118px;
+        resize: vertical;
+        padding: 10px 11px;
+      }
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--blue);
+      }
+
+      .raw-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .raw-area {
+        min-height: 58vh;
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          Consolas,
+          "Liberation Mono",
+          monospace;
+        font-size: 0.84rem;
+        line-height: 1.48;
+      }
+
+      .empty-state {
+        padding: 28px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      a {
+        color: var(--blue);
+        font-weight: 750;
+      }
+
+      @media (max-width: 960px) {
+        .topbar,
+        .layout,
+        .editor-grid,
+        .section-head {
+          grid-template-columns: 1fr;
+        }
+
+        .top-actions {
+          justify-content: flex-start;
+        }
+
+        .sidebar {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .nav-list {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .item-list {
+          max-height: 320px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .nav-list {
+          grid-template-columns: 1fr;
+        }
+
+        .panel-toolbar,
+        .top-actions {
+          display: grid;
+        }
+
+        .button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <h1>Smartgrid Lab 콘텐츠 편집기</h1>
+          <p>뉴스, 멤버, 논문, 과제 데이터를 수정한 뒤 `data/lab-data.js`로 저장합니다.</p>
+        </div>
+        <div class="top-actions">
+          <button class="button" type="button" data-action="import">lab-data.js 불러오기</button>
+          <button class="button" type="button" data-action="copy">복사</button>
+          <button class="button" type="button" data-action="download">다운로드</button>
+          <button class="button primary" type="button" data-action="save">파일로 저장</button>
+        </div>
+      </header>
+
+      <div class="layout">
+        <aside class="sidebar">
+          <nav class="nav-list" data-nav></nav>
+          <div class="sidebar-note">
+            <strong>권장 흐름</strong><br />
+            1. 항목을 수정합니다.<br />
+            2. `파일로 저장`을 누릅니다.<br />
+            3. `data/lab-data.js`를 선택해 덮어씁니다.<br />
+            4. 홈페이지를 새로고침합니다.<br />
+            5. `publish-site.cmd`를 실행해 GitHub에 올립니다.
+          </div>
+          <div class="sidebar-note">
+            <strong>GitHub 업로드</strong><br />
+            편집기는 Git을 직접 실행할 수 없습니다. 저장 후 폴더에서 `publish-site.cmd`를 더블클릭하면 변경 목록 확인, 커밋, 푸시를 순서대로 진행합니다.
+          </div>
+        </aside>
+
+        <main class="workspace">
+          <div class="status" data-status>현재 `data/lab-data.js`에서 데이터를 읽었습니다.</div>
+          <section data-workspace></section>
+        </main>
+      </div>
+    </div>
+
+    <input hidden type="file" accept=".js,.json" data-file-input />
+    <script src="data/lab-data.js"></script>
+    <script>
+      const loadedData = window.labData || {};
+      let state = structuredClone(loadedData);
+      let currentSection = "news";
+      const selectedIndex = {};
+
+      const field = (path, label, kind = "text", hint = "") => ({ path, label, kind, hint });
+
+      const sections = {
+        featuredProject: {
+          label: "대표 과제",
+          type: "object",
+          description: "홈과 과제 페이지에서 강조되는 대표 과제입니다.",
+          fields: [
+            field("label", "라벨"),
+            field("title", "제목"),
+            field("description", "설명", "textarea"),
+            field("sponsor", "지원 기관"),
+          ],
+        },
+        news: {
+          label: "뉴스",
+          type: "array",
+          description: "메인 뉴스와 News 페이지에 표시됩니다.",
+          template: { date: "", category: "Research", title: "새 소식", description: "", image: "" },
+          fields: [
+            field("date", "날짜", "text", "예: 2026.06"),
+            field("category", "분류"),
+            field("title", "제목"),
+            field("description", "설명", "textarea"),
+            field("image", "이미지 경로", "text", "예: assets/gallery/news.jpg"),
+            field("empty", "자리표시자", "checkbox"),
+          ],
+        },
+        members: {
+          label: "멤버",
+          type: "array",
+          description: "Members, Professor 페이지에 표시되는 구성원입니다.",
+          template: { name: "New Member", role: "M.S. Candidate", interest: "", photo: "", links: {} },
+          fields: [
+            field("name", "이름"),
+            field("role", "과정/직함"),
+            field("interest", "연구분야"),
+            field("photo", "사진 경로", "text", "예: assets/members/name.jpg"),
+            field("links.email", "이메일"),
+            field("links.scholar", "Google Scholar 링크"),
+            field("links.github", "GitHub 링크"),
+            field("lead", "교수/대표 카드", "checkbox"),
+            field("empty", "자리표시자", "checkbox"),
+          ],
+        },
+        projects: {
+          label: "과제",
+          type: "array",
+          description: "Projects 페이지와 Active Projects 숫자 집계에 쓰입니다.",
+          template: { status: "Active", title: "새 과제", description: "" },
+          fields: [
+            field("status", "상태", "text", "Active 또는 Completed"),
+            field("title", "과제명", "textarea"),
+            field("description", "지원 기관/설명", "textarea"),
+            field("empty", "자리표시자", "checkbox"),
+          ],
+        },
+        publications: {
+          label: "논문",
+          type: "array",
+          description: "Publications 페이지의 논문 목록입니다.",
+          template: { year: "2026", title: "새 논문", authors: "", venue: "", doi: "", tags: ["recent"] },
+          fields: [
+            field("year", "연도"),
+            field("title", "논문 제목", "textarea"),
+            field("authors", "저자"),
+            field("venue", "저널/학회"),
+            field("doi", "DOI 링크"),
+            field("tags", "태그", "tags", "쉼표로 구분: recent, 2024"),
+            field("empty", "자리표시자", "checkbox"),
+          ],
+        },
+        achievements: {
+          label: "실적",
+          type: "array",
+          description: "Achievements 페이지에 표시되는 수상, 특허, 기술이전 등입니다.",
+          template: { type: "Award", title: "새 실적", meta: "", description: "" },
+          fields: [
+            field("type", "종류"),
+            field("title", "제목"),
+            field("meta", "메타 정보"),
+            field("description", "설명", "textarea"),
+            field("empty", "자리표시자", "checkbox"),
+          ],
+        },
+        gallery: {
+          label: "갤러리",
+          type: "array",
+          description: "Gallery 페이지와 메인 갤러리에 표시됩니다.",
+          template: { caption: "새 사진", image: "", alt: "" },
+          fields: [
+            field("caption", "캡션"),
+            field("image", "이미지 경로", "text", "예: assets/gallery/lab-photo.jpg"),
+            field("alt", "대체 텍스트", "textarea"),
+            field("empty", "자리표시자", "checkbox"),
+          ],
+        },
+        raw: {
+          label: "원본 JSON",
+          type: "raw",
+          description: "졸업생, 특허처럼 복잡한 구조는 여기서 직접 수정합니다.",
+        },
+      };
+
+      const nav = document.querySelector("[data-nav]");
+      const workspace = document.querySelector("[data-workspace]");
+      const statusEl = document.querySelector("[data-status]");
+      const fileInput = document.querySelector("[data-file-input]");
+
+      const setStatus = (message, tone = "") => {
+        statusEl.textContent = message;
+        statusEl.className = `status ${tone}`.trim();
+      };
+
+      const getPath = (object, path) =>
+        path.split(".").reduce((acc, key) => (acc && Object.hasOwn(acc, key) ? acc[key] : undefined), object);
+
+      const setPath = (object, path, value) => {
+        const parts = path.split(".");
+        let target = object;
+        parts.slice(0, -1).forEach((part) => {
+          if (!target[part] || typeof target[part] !== "object" || Array.isArray(target[part])) {
+            target[part] = {};
+          }
+          target = target[part];
+        });
+        target[parts.at(-1)] = value;
+      };
+
+      const summarize = (item, index) => {
+        if (!item || typeof item !== "object") return [`항목 ${index + 1}`, ""];
+        const title = item.title || item.name || item.caption || item.label || `항목 ${index + 1}`;
+        const meta = [item.date, item.year, item.category, item.role, item.status, item.type].filter(Boolean).join(" · ");
+        return [title, meta];
+      };
+
+      const renderNav = () => {
+        nav.textContent = "";
+        Object.entries(sections).forEach(([key, section]) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = section.label;
+          button.classList.toggle("is-active", key === currentSection);
+          button.addEventListener("click", () => {
+            currentSection = key;
+            render();
+          });
+          nav.append(button);
+        });
+      };
+
+      const renderField = (target, item, config) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = config.kind === "checkbox" ? "field inline" : "field";
+
+        const id = `field-${config.path.replaceAll(".", "-")}`;
+        const label = document.createElement("label");
+        label.setAttribute("for", id);
+        label.textContent = config.label;
+
+        let input;
+        const value = getPath(item, config.path);
+        if (config.kind === "textarea") {
+          input = document.createElement("textarea");
+          input.value = value ?? "";
+        } else if (config.kind === "checkbox") {
+          input = document.createElement("input");
+          input.type = "checkbox";
+          input.checked = Boolean(value);
+        } else {
+          input = document.createElement("input");
+          input.type = "text";
+          input.value = config.kind === "tags" ? (Array.isArray(value) ? value.join(", ") : "") : (value ?? "");
+        }
+        input.id = id;
+
+        const commit = () => {
+          let nextValue;
+          if (config.kind === "checkbox") nextValue = input.checked;
+          else if (config.kind === "tags") nextValue = input.value.split(",").map((v) => v.trim()).filter(Boolean);
+          else nextValue = input.value;
+          setPath(item, config.path, nextValue);
+          if (config.kind !== "textarea") renderListOnly();
+          setStatus("수정됨. 저장하려면 오른쪽 위 `파일로 저장` 또는 `다운로드`를 누르세요.", "warn");
+        };
+
+        input.addEventListener(config.kind === "checkbox" ? "change" : "input", commit);
+
+        if (config.kind === "checkbox") {
+          wrapper.append(input, label);
+        } else {
+          wrapper.append(label, input);
+        }
+
+        if (config.hint) {
+          const hint = document.createElement("small");
+          hint.textContent = config.hint;
+          wrapper.append(hint);
+        }
+
+        target.append(wrapper);
+      };
+
+      const renderObjectEditor = (section, object) => {
+        const panel = document.createElement("div");
+        panel.className = "panel form-panel";
+        const form = document.createElement("div");
+        form.className = "form-grid";
+        section.fields.forEach((item) => renderField(form, object, item));
+        panel.append(form);
+        workspace.append(panel);
+      };
+
+      const renderArrayEditor = (key, section) => {
+        if (!Array.isArray(state[key])) state[key] = [];
+        const list = state[key];
+        if (!(key in selectedIndex)) selectedIndex[key] = 0;
+        selectedIndex[key] = Math.max(0, Math.min(selectedIndex[key], Math.max(0, list.length - 1)));
+
+        const grid = document.createElement("div");
+        grid.className = "editor-grid";
+
+        const listPanel = document.createElement("div");
+        listPanel.className = "panel";
+
+        const toolbar = document.createElement("div");
+        toolbar.className = "panel-toolbar";
+        [
+          ["추가", () => {
+            list.push(structuredClone(section.template));
+            selectedIndex[key] = list.length - 1;
+            setStatus("항목을 추가했습니다.", "warn");
+            render();
+          }],
+          ["복제", () => {
+            if (!list.length) return;
+            list.splice(selectedIndex[key] + 1, 0, structuredClone(list[selectedIndex[key]]));
+            selectedIndex[key] += 1;
+            setStatus("항목을 복제했습니다.", "warn");
+            render();
+          }],
+          ["위", () => moveItem(key, -1)],
+          ["아래", () => moveItem(key, 1)],
+          ["삭제", () => deleteItem(key)],
+        ].forEach(([label, handler]) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `button small ${label === "삭제" ? "danger" : ""}`;
+          button.textContent = label;
+          button.addEventListener("click", handler);
+          toolbar.append(button);
+        });
+
+        const listWrap = document.createElement("div");
+        listWrap.className = "item-list";
+        list.forEach((item, index) => {
+          const [title, meta] = summarize(item, index);
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `item-button ${index === selectedIndex[key] ? "is-active" : ""}`.trim();
+          const strong = document.createElement("strong");
+          strong.textContent = title;
+          const span = document.createElement("span");
+          span.textContent = meta || `항목 ${index + 1}`;
+          button.append(strong, span);
+          button.addEventListener("click", () => {
+            selectedIndex[key] = index;
+            render();
+          });
+          listWrap.append(button);
+        });
+
+        if (!list.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty-state";
+          empty.textContent = "아직 항목이 없습니다. `추가`를 누르세요.";
+          listWrap.append(empty);
+        }
+
+        listPanel.append(toolbar, listWrap);
+        grid.append(listPanel);
+
+        const formPanel = document.createElement("div");
+        formPanel.className = "panel form-panel";
+        const form = document.createElement("div");
+        form.className = "form-grid";
+        const selected = list[selectedIndex[key]];
+        if (selected) section.fields.forEach((item) => renderField(form, selected, item));
+        else form.textContent = "편집할 항목이 없습니다.";
+        formPanel.append(form);
+        grid.append(formPanel);
+        workspace.append(grid);
+      };
+
+      const renderRawEditor = () => {
+        const panel = document.createElement("div");
+        panel.className = "panel form-panel";
+        const tools = document.createElement("div");
+        tools.className = "raw-tools";
+
+        const apply = document.createElement("button");
+        apply.type = "button";
+        apply.className = "button primary";
+        apply.textContent = "JSON 적용";
+
+        const refresh = document.createElement("button");
+        refresh.type = "button";
+        refresh.className = "button";
+        refresh.textContent = "현재 데이터 다시 표시";
+
+        const area = document.createElement("textarea");
+        area.className = "raw-area";
+        area.spellcheck = false;
+        area.value = JSON.stringify(cleanForExport(state), null, 2);
+
+        apply.addEventListener("click", () => {
+          try {
+            const parsed = JSON.parse(area.value);
+            state = parsed;
+            setStatus("JSON을 적용했습니다.", "warn");
+            render();
+          } catch (error) {
+            setStatus(`JSON 오류: ${error.message}`, "warn");
+          }
+        });
+
+        refresh.addEventListener("click", () => {
+          area.value = JSON.stringify(cleanForExport(state), null, 2);
+          setStatus("현재 데이터를 다시 표시했습니다.");
+        });
+
+        tools.append(apply, refresh);
+        panel.append(tools, area);
+        workspace.append(panel);
+      };
+
+      const renderHeader = (section) => {
+        const head = document.createElement("div");
+        head.className = "section-head";
+        const text = document.createElement("div");
+        const h2 = document.createElement("h2");
+        h2.textContent = section.label;
+        const p = document.createElement("p");
+        p.textContent = section.description || "";
+        text.append(h2, p);
+
+        const link = document.createElement("a");
+        link.href = "index.html";
+        link.target = "_blank";
+        link.rel = "noreferrer";
+        link.textContent = "홈페이지 미리보기";
+        head.append(text, link);
+        workspace.append(head);
+      };
+
+      const renderListOnly = () => {
+        const activeButtons = document.querySelectorAll(".item-button");
+        const list = state[currentSection];
+        if (!Array.isArray(list)) return;
+        activeButtons.forEach((button, index) => {
+          const [title, meta] = summarize(list[index], index);
+          button.querySelector("strong").textContent = title;
+          button.querySelector("span").textContent = meta || `항목 ${index + 1}`;
+        });
+      };
+
+      const render = () => {
+        renderNav();
+        workspace.textContent = "";
+        const section = sections[currentSection];
+        renderHeader(section);
+        if (section.type === "object") renderObjectEditor(section, state[currentSection] || (state[currentSection] = {}));
+        if (section.type === "array") renderArrayEditor(currentSection, section);
+        if (section.type === "raw") renderRawEditor();
+      };
+
+      const moveItem = (key, direction) => {
+        const list = state[key];
+        const from = selectedIndex[key];
+        const to = from + direction;
+        if (!Array.isArray(list) || to < 0 || to >= list.length) return;
+        const [item] = list.splice(from, 1);
+        list.splice(to, 0, item);
+        selectedIndex[key] = to;
+        setStatus("항목 순서를 바꿨습니다.", "warn");
+        render();
+      };
+
+      const deleteItem = (key) => {
+        const list = state[key];
+        if (!Array.isArray(list) || !list.length) return;
+        const [title] = summarize(list[selectedIndex[key]], selectedIndex[key]);
+        const ok = window.confirm(`삭제할까요?\n\n${title}`);
+        if (!ok) return;
+        list.splice(selectedIndex[key], 1);
+        selectedIndex[key] = Math.max(0, selectedIndex[key] - 1);
+        setStatus("항목을 삭제했습니다.", "warn");
+        render();
+      };
+
+      const cleanForExport = (value) => {
+        if (Array.isArray(value)) return value.map(cleanForExport);
+        if (!value || typeof value !== "object") return value;
+
+        const output = {};
+        Object.entries(value).forEach(([key, raw]) => {
+          const next = cleanForExport(raw);
+          if ((key === "empty" || key === "lead") && next === false) return;
+          if (key === "links" && next && typeof next === "object") {
+            Object.keys(next).forEach((linkKey) => {
+              if (!next[linkKey]) delete next[linkKey];
+            });
+            if (!Object.keys(next).length) return;
+          }
+          output[key] = next;
+        });
+        return output;
+      };
+
+      const buildFile = () => {
+        const data = cleanForExport(state);
+        return [
+          "/*",
+          "  Smartgrid Lab public content data.",
+          "  Edit with editor.html or update this file directly.",
+          "*/",
+          "",
+          `window.labData = ${JSON.stringify(data, null, 2)};`,
+          "",
+        ].join("\n");
+      };
+
+      const downloadFile = () => {
+        const blob = new Blob([buildFile()], { type: "text/javascript;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "lab-data.js";
+        document.body.append(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(link.href);
+        setStatus("lab-data.js를 다운로드했습니다. 기존 `data/lab-data.js`와 교체하면 됩니다.", "good");
+      };
+
+      const copyFile = async () => {
+        try {
+          await navigator.clipboard.writeText(buildFile());
+          setStatus("생성된 lab-data.js 내용을 클립보드에 복사했습니다.", "good");
+        } catch (error) {
+          setStatus(`복사 실패: ${error.message}`, "warn");
+        }
+      };
+
+      const saveFile = async () => {
+        if (!window.showSaveFilePicker) {
+          setStatus("이 브라우저에서는 직접 저장을 지원하지 않습니다. `다운로드`를 사용하세요.", "warn");
+          return;
+        }
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: "lab-data.js",
+            types: [{ description: "JavaScript", accept: { "text/javascript": [".js"] } }],
+          });
+          const writable = await handle.createWritable();
+          await writable.write(buildFile());
+          await writable.close();
+          setStatus("파일로 저장했습니다. 홈페이지를 새로고침해 확인하세요.", "good");
+        } catch (error) {
+          if (error.name === "AbortError") return;
+          setStatus(`저장 실패: ${error.message}`, "warn");
+        }
+      };
+
+      const importFile = (text) => {
+        try {
+          const fakeWindow = {};
+          const data = new Function("window", `${text}\n; return window.labData;`)(fakeWindow);
+          if (!data || typeof data !== "object") throw new Error("window.labData를 찾지 못했습니다.");
+          state = structuredClone(data);
+          setStatus("선택한 파일을 불러왔습니다.", "good");
+          render();
+        } catch (error) {
+          setStatus(`불러오기 실패: ${error.message}`, "warn");
+        }
+      };
+
+      document.querySelector("[data-action='download']").addEventListener("click", downloadFile);
+      document.querySelector("[data-action='copy']").addEventListener("click", copyFile);
+      document.querySelector("[data-action='save']").addEventListener("click", saveFile);
+      document.querySelector("[data-action='import']").addEventListener("click", () => fileInput.click());
+
+      fileInput.addEventListener("change", async () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+        importFile(await file.text());
+        fileInput.value = "";
+      });
+
+      render();
+    </script>
+  </body>
+</html>

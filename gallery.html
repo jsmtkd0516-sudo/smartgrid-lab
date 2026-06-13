@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Gallery — Yonsei University Smartgrid Laboratory." />
+    <title>Gallery · Yonsei Smartgrid Laboratory</title>
+    <script>
+      document.documentElement.classList.add("js-ready");
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header" data-header data-site-header></header>
+
+    <main>
+      <section class="section news-gallery-section">
+        <p class="page-lead reveal">연구실 활동, 학회, 연구 데모 사진을 모아 보여주는 영역입니다.</p>
+        <div class="gallery-grid gallery-page reveal" id="gallery" aria-label="Gallery" data-gallery-list></div>
+      </section>
+    </main>
+
+    <div data-site-footer></div>
+
+    <script src="data/lab-data.js"></script>
+    <script src="chrome.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
