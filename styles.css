@@ -1946,36 +1946,39 @@ button:focus-visible,
   color: var(--muted);
 }
 
-/* 논문 액션: DOI · BibTeX */
-.pub-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.pub-link,
-.pub-bibtex {
-  display: inline-flex;
-  align-items: center;
-  min-height: 28px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: #fff;
+/* 논문: 연도 그룹 + 한 줄 행 */
+.pub-year {
+  margin: 0 0 6px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--line);
   color: var(--blue);
-  font-size: 0.76rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition:
-    background 160ms ease,
-    border-color 160ms ease;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.pub-link:hover,
-.pub-bibtex:hover {
-  background: #eef6fb;
-  border-color: rgba(59, 183, 232, 0.45);
-  transform: none;
+.pub-rows {
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.pub-row {
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pub-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.98rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.pub-venue {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-style: italic;
 }
 

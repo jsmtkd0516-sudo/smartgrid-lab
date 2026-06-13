@@ -43,43 +43,40 @@ const renderPublications = () => {
   const target = document.querySelector("[data-publication-list]");
   if (!target) return;
 
-  // 보유 필드(제목·저자·게재지·연도)로 BibTeX 한 항목을 생성.
-  const toBibtex = (item) => {
-    const first = (item.authors || "Hur").split(",")[0].replace(/[^A-Za-z]/g, "") || "ref";
-    const yr = (String(item.year).match(/\d{4}/) || [""])[0];
-    const key = (first + yr).toLowerCase() || "ref";
-    const journal = (item.venue || "").replace(/\s*\([^)]*\)\s*$/, "");
-    const lines = ["@article{" + key + ","];
-    lines.push("  title   = {" + item.title + "},");
-    if (item.authors) lines.push("  author  = {" + item.authors + "},");
-    if (journal) lines.push("  journal = {" + journal + "},");
-    if (yr) lines.push("  year    = {" + yr + "}");
-    lines.push("}");
-    return lines.join("\n");
-  };
+  // 연도별로 묶어 헤더는 한 번씩, 각 논문은 한 줄(제목 + 저자 + 게재지) 행으로.
+  const pubs = (labData.publications ?? []).filter((item) => !item.empty);
+  const order = [];
+  const byYear = new Map();
+  pubs.forEach((item) => {
+    const year = item.year || "";
+    if (!byYear.has(year)) {
+      byYear.set(year, []);
+      order.push(year);
+    }
+    byYear.get(year).push(item);
+  });
 
-  target.innerHTML = (labData.publications ?? [])
-    .map((item) => {
-      const actions = item.empty
-        ? ""
-        : `<div class="pub-actions">
-            ${item.doi ? `<a class="pub-link" href="${escapeHtml(item.doi)}" target="_blank" rel="noreferrer">DOI</a>` : ""}
-            <button class="pub-bibtex" type="button" data-bib="${escapeHtml(toBibtex(item))}">BibTeX</button>
-          </div>`;
-      return `
-        <article class="publication-item reveal ${item.empty ? "empty-card" : ""}" data-tags="${escapeHtml(
-          (item.tags ?? []).join(" ")
-        )}">
-          <time>${escapeHtml(item.year)}</time>
-          <div>
-            <h3>${escapeHtml(item.title)}</h3>
-            ${item.authors ? `<p class="pub-authors">${escapeHtml(item.authors)}</p>` : ""}
-            <p>${escapeHtml(item.venue)}</p>
-            ${actions}
-          </div>
-        </article>
-      `;
-    })
+  target.innerHTML = order
+    .map(
+      (year) => `
+        <div class="pub-group">
+          <h3 class="pub-year">${escapeHtml(year)}</h3>
+          <ul class="pub-rows">
+            ${byYear
+              .get(year)
+              .map(
+                (item) => `
+                <li class="pub-row reveal">
+                  <p class="pub-title">${escapeHtml(item.title)}</p>
+                  ${item.authors ? `<p class="pub-authors">${escapeHtml(item.authors)}</p>` : ""}
+                  <p class="pub-venue">${escapeHtml(item.venue)}</p>
+                </li>`
+              )
+              .join("")}
+          </ul>
+        </div>
+      `
+    )
     .join("");
 };
 
@@ -628,23 +625,8 @@ const setupHeroCanvas = () => {
   });
 };
 
-const setupPublicationActions = () => {
-  document.querySelectorAll(".pub-bibtex").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const text = btn.dataset.bib || "";
-      if (navigator.clipboard) navigator.clipboard.writeText(text);
-      const label = btn.textContent;
-      btn.textContent = "Copied!";
-      window.setTimeout(() => {
-        btn.textContent = label;
-      }, 1500);
-    });
-  });
-};
-
 renderContent();
 setupPublicationFilters();
-setupPublicationActions();
 setupReveal();
 setupHeroStats();
 setupHeroCanvas();

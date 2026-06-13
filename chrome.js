@@ -11,7 +11,6 @@
       href: "overview.html",
       menu: [
         { label: "Overview", href: "overview.html" },
-        { label: "Milestones", href: "milestones.html" },
         { label: "Contact", href: "contact.html" },
       ],
     },
