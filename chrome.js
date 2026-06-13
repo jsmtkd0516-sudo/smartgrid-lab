@@ -175,4 +175,26 @@
   window.addEventListener("scroll", () => {
     headerEl?.classList.toggle("is-scrolled", window.scrollY > 20);
   });
+
+  // 터치(호버 불가) 기기: 큰 메뉴 첫 탭 = 드롭다운 열기, 두 번째 탭 = 이동.
+  if (window.matchMedia("(hover: none)").matches) {
+    nav?.querySelectorAll(".nav-item.has-menu > .nav-top").forEach((top) => {
+      top.addEventListener("click", (event) => {
+        if (window.innerWidth <= 820) return; // 모바일 패널은 하위메뉴가 이미 펼쳐져 있음
+        const item = top.parentElement;
+        if (!item.classList.contains("is-open")) {
+          event.preventDefault();
+          nav.querySelectorAll(".nav-item.is-open").forEach((el) => {
+            if (el !== item) el.classList.remove("is-open");
+          });
+          item.classList.add("is-open");
+        }
+      });
+    });
+    document.addEventListener("click", (event) => {
+      if (!(event.target instanceof Element) || !event.target.closest(".nav-item")) {
+        nav?.querySelectorAll(".nav-item.is-open").forEach((el) => el.classList.remove("is-open"));
+      }
+    });
+  }
 })();

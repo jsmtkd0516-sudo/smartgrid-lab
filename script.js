@@ -329,6 +329,27 @@ const renderPatents = () => {
     .join("");
 };
 
+const renderHomeNews = () => {
+  const target = document.querySelector("[data-home-news]");
+  if (!target) return;
+
+  const items = (labData.news ?? []).filter((item) => !item.empty).slice(0, 3);
+  target.innerHTML = items
+    .map(
+      (item) => `
+        <a class="home-news-item" href="news.html">
+          <p class="news-meta">
+            ${item.date ? `<time>${escapeHtml(item.date)}</time>` : ""}
+            <span class="news-category">${escapeHtml(item.category)}</span>
+          </p>
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
+        </a>
+      `
+    )
+    .join("");
+};
+
 const renderContent = () => {
   renderFeaturedProject();
   renderProjects();
@@ -338,6 +359,7 @@ const renderContent = () => {
   renderAlumni();
   renderPatents();
   renderNews();
+  renderHomeNews();
   renderGallery();
 };
 
