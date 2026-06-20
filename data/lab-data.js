@@ -962,7 +962,9 @@ window.labData = {
       title: "AI·SW HVDC 통합 전력계통 혁신연구센터",
       description:
         "AI·소프트웨어와 HVDC를 통합하는 전력계통 혁신연구센터에 참여합니다 (AI·SW HVDC Integrated Power System Innovation Research Center).",
-      image: "",
+      body:
+        "Smartgrid Laboratory는 HVDC, 전력전자 기반 송전설비, AI·SW 기반 전력계통 운영 기술을 연결하는 연구를 수행합니다.\n\n센터 관련 상세 내용과 참여 연구 주제는 연구실 내부 검수 후 순차적으로 보완할 예정입니다.",
+      image: "assets/research/power-electronics-hvdc.jpg",
     },
     {
       date: "",
@@ -970,14 +972,18 @@ window.labData = {
       title: "석·박사 및 학부연구생 상시 모집",
       description:
         "전력계통, 전력전자(HVDC/FACTS/MMC), 그리드포밍, EMT 해석, AI 기반 계통 운영·최적화에 관심 있는 학생을 기다립니다.",
-      image: "",
+      body:
+        "Smartgrid Laboratory는 전력계통 안정도, HVDC·FACTS, 재생에너지 연계, EMT 해석, AI 기반 계통 운영을 함께 연구할 학생을 기다립니다.\n\n관심 있는 학생은 연구 분야와 지원 가능 일정을 정리해 연구실로 문의해 주세요.",
+      image: "assets/research/monitoring-grid-dynamics.jpg",
     },
     {
       date: "",
       category: "Research",
       title: "Grid-forming · 컨버터 기반 전력망 연구",
       description: "인버터 기반 설비 확대에 따른 전력망 안정도와 정밀 해석 기술을 고도화합니다.",
-      image: "",
+      body:
+        "재생에너지와 전력전자 기반 설비가 늘어나는 전력망에서는 기존 동기기 중심 해석만으로 설명하기 어려운 동특성이 나타납니다.\n\n연구실은 grid-forming 제어, 컨버터 기반 설비 모델링, 계통 안정도 평가, 시뮬레이션 기반 검증 방법을 함께 다룹니다.",
+      image: "assets/research/renewable-smart-grid.jpg",
     },
     {
       date: "",
@@ -1000,6 +1006,7 @@ window.labData = {
       image: "",
       relatedNewsTitle: "",
       alt: "연구실 단체 사진 자리",
+      empty: true,
     },
     {
       caption: "Conference",
@@ -1011,6 +1018,7 @@ window.labData = {
       image: "",
       relatedNewsTitle: "",
       alt: "학회 발표 사진 자리",
+      empty: true,
     },
     {
       caption: "Research Demo",
@@ -1022,6 +1030,7 @@ window.labData = {
       image: "",
       relatedNewsTitle: "",
       alt: "연구 데모 사진 자리",
+      empty: true,
     },
   ],
 };

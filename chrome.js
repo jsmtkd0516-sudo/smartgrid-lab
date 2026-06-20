@@ -40,14 +40,7 @@
         { label: "Patents", href: "patents.html" },
       ],
     },
-    {
-      label: "News",
-      href: "news.html",
-      menu: [
-        { label: "News", href: "news.html" },
-        { label: "Gallery", href: "gallery.html" },
-      ],
-    },
+    { label: "News & Gallery", href: "news.html" },
   ];
 
   const current = (() => {
@@ -56,7 +49,9 @@
   })();
 
   const isActive = (item) =>
-    item.href === current || (item.menu && item.menu.some((m) => m.href === current));
+    item.href === current ||
+    (item.href === "news.html" && current === "gallery.html") ||
+    (item.menu && item.menu.some((m) => m.href === current));
 
   const navItems = NAV.map((item) => {
     const active = isActive(item);
@@ -136,7 +131,7 @@
           title = hit.label;
           break;
         }
-      } else if (item.href === current) {
+      } else if (item.href === current || (item.href === "news.html" && current === "gallery.html")) {
         title = item.label;
         break;
       }

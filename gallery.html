@@ -3,27 +3,31 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Gallery — Yonsei University Smartgrid Laboratory." />
-    <title>Gallery · Yonsei Smartgrid Laboratory</title>
+    <meta name="description" content="News, notices, and gallery posts — Yonsei University Smartgrid Laboratory." />
+    <title>News & Gallery · Yonsei Smartgrid Laboratory</title>
     <script>
       document.documentElement.classList.add("js-ready");
     </script>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20260620-post-board" />
   </head>
   <body>
     <header class="site-header" data-header data-site-header></header>
 
     <main>
       <section class="section news-gallery-section">
-        <p class="page-lead reveal">연구실 활동, 학회, 연구 데모 사진을 모아 보여주는 영역입니다.</p>
-        <div class="gallery-grid gallery-page reveal" id="gallery" aria-label="Gallery" data-gallery-list></div>
+        <div class="section-heading reveal">
+          <p class="eyebrow">News & Gallery</p>
+          <h2>Lab posts</h2>
+          <p>공지, 연구 소식, 학회 활동, 연구실 사진을 하나의 게시글 흐름으로 정리했습니다.</p>
+        </div>
+        <div class="post-board reveal" id="gallery" aria-label="News and gallery posts" data-post-list></div>
       </section>
     </main>
 
     <div data-site-footer></div>
 
-    <script src="data/lab-data.js?v=20260620-gallery-modal"></script>
-    <script src="chrome.js?v=20260620-gallery-modal"></script>
-    <script src="script.js?v=20260620-gallery-modal"></script>
+    <script src="data/lab-data.js?v=20260620-post-board"></script>
+    <script src="chrome.js?v=20260620-post-board"></script>
+    <script src="script.js?v=20260620-post-board"></script>
   </body>
 </html>

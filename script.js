@@ -253,43 +253,17 @@ const renderAlumni = () => {
     .join("");
 };
 
-const renderNews = () => {
-  const target = document.querySelector("[data-news-list]");
-  if (!target) return;
-
-  target.innerHTML = (labData.news ?? [])
-    .map((item) => {
-      const thumb = item.image
-        ? `<img class="news-thumb" src="${escapeHtml(item.image)}" alt="" loading="lazy" />`
-        : "";
-
-      return `
-        <article class="news-item ${item.image ? "has-thumb" : ""} ${item.empty ? "empty-card" : ""}">
-          ${thumb}
-          <div class="news-body">
-            <p class="news-meta">
-              ${item.date ? `<time>${escapeHtml(item.date)}</time>` : ""}
-              <span class="news-category">${escapeHtml(item.category)}</span>
-            </p>
-            <h3>${escapeHtml(item.title)}</h3>
-            <p>${escapeHtml(item.description)}</p>
-            ${renderParagraphs(item.body, "news-post-body")}
-          </div>
-        </article>
-      `;
-    })
-    .join("");
-};
-
 const findRelatedNews = (item) => {
   const key = (item.relatedNewsTitle || item.newsTitle || item.caption || "").trim().toLowerCase();
   if (!key) return null;
   return (labData.news ?? []).find((news) => !news.empty && String(news.title || "").trim().toLowerCase() === key) || null;
 };
 
-const galleryPost = (item) => {
+const galleryPost = (item, index = 0) => {
   const related = findRelatedNews(item);
   return {
+    id: `gallery-${index}`,
+    source: "Gallery",
     date: item.date || related?.date || "",
     category: item.category || related?.category || "Gallery",
     title: item.title || item.caption || related?.title || "Gallery",
@@ -300,96 +274,145 @@ const galleryPost = (item) => {
   };
 };
 
-const closeGalleryModal = () => {
-  const modal = document.querySelector("[data-gallery-modal]");
+const titleKey = (value = "") => String(value).trim().toLowerCase();
+
+const buildPostFeed = () => {
+  const posts = (labData.news ?? [])
+    .filter((item) => !item.empty)
+    .map((item, index) => ({
+      id: `news-${index}`,
+      source: "News",
+      date: item.date || "",
+      category: item.category || "News",
+      title: item.title || "Untitled",
+      description: item.description || "",
+      body: item.body || "",
+      image: item.image || "",
+      alt: item.alt || item.title || "News image",
+    }));
+
+  (labData.gallery ?? [])
+    .filter((item) => !item.empty)
+    .forEach((item, index) => {
+      const related = findRelatedNews(item);
+      const relatedKey = titleKey(related?.title);
+      const existing = relatedKey ? posts.find((post) => titleKey(post.title) === relatedKey) : null;
+      if (existing) {
+        if (!existing.image && item.image) existing.image = item.image;
+        if (!existing.body && item.body) existing.body = item.body;
+        if (!existing.description && item.description) existing.description = item.description;
+        existing.alt = item.alt || existing.alt;
+        return;
+      }
+      posts.push(galleryPost(item, index));
+    });
+
+  return posts;
+};
+
+const postMedia = (post, className = "post-thumb") =>
+  post.image
+    ? `<img class="${className}" src="${escapeHtml(post.image)}" alt="${escapeHtml(post.alt || post.title)}" loading="lazy" />`
+    : `<span class="${className} post-thumb-placeholder" role="img" aria-label="${escapeHtml(post.title)} 썸네일">
+        <span>${escapeHtml(post.category || post.source || "Post")}</span>
+      </span>`;
+
+const closePostModal = () => {
+  const modal = document.querySelector("[data-post-modal]");
   if (!modal) return;
   modal.hidden = true;
   document.body.classList.remove("modal-open");
 };
 
-const openGalleryModal = (item) => {
-  const modal = document.querySelector("[data-gallery-modal]");
+const openPostModal = (post) => {
+  const modal = document.querySelector("[data-post-modal]");
   if (!modal) return;
 
-  const post = galleryPost(item);
-  modal.querySelector("[data-gallery-modal-media]").innerHTML = post.image
+  modal.querySelector("[data-post-modal-media]").innerHTML = post.image
     ? `<img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.alt)}" />`
-    : `<div class="gallery-placeholder"><span>사진 추가</span></div>`;
-  modal.querySelector("[data-gallery-modal-meta]").innerHTML = `
+    : `<div class="gallery-placeholder"><span>${escapeHtml(post.category || "Post")}</span></div>`;
+  modal.querySelector("[data-post-modal-meta]").innerHTML = `
     ${post.date ? `<time>${escapeHtml(post.date)}</time>` : ""}
     <span class="news-category">${escapeHtml(post.category)}</span>
   `;
-  modal.querySelector("[data-gallery-modal-title]").textContent = post.title;
-  modal.querySelector("[data-gallery-modal-description]").textContent = post.description;
-  modal.querySelector("[data-gallery-modal-body]").innerHTML = renderParagraphs(post.body, "news-post-body");
+  modal.querySelector("[data-post-modal-title]").textContent = post.title;
+  modal.querySelector("[data-post-modal-description]").textContent = post.description;
+  modal.querySelector("[data-post-modal-body]").innerHTML = renderParagraphs(post.body || post.description, "news-post-body");
 
   modal.hidden = false;
   document.body.classList.add("modal-open");
-  modal.querySelector("[data-gallery-modal-close]")?.focus();
+  modal.querySelector("[data-post-modal-close]")?.focus();
 };
 
-const ensureGalleryModal = () => {
-  let modal = document.querySelector("[data-gallery-modal]");
+const ensurePostModal = () => {
+  let modal = document.querySelector("[data-post-modal]");
   if (modal) return modal;
 
   modal = document.createElement("div");
-  modal.className = "gallery-modal";
+  modal.className = "gallery-modal post-modal";
   modal.hidden = true;
-  modal.dataset.galleryModal = "";
+  modal.dataset.postModal = "";
   modal.innerHTML = `
-    <div class="gallery-modal-backdrop" data-gallery-modal-close></div>
+    <div class="gallery-modal-backdrop" data-post-modal-close></div>
     <article class="gallery-modal-card" role="dialog" aria-modal="true" aria-labelledby="gallery-modal-title">
-      <button class="gallery-modal-close" type="button" aria-label="닫기" data-gallery-modal-close>&times;</button>
-      <div class="gallery-modal-media" data-gallery-modal-media></div>
+      <button class="gallery-modal-close" type="button" aria-label="닫기" data-post-modal-close>&times;</button>
+      <div class="gallery-modal-media" data-post-modal-media></div>
       <div class="gallery-modal-body">
-        <p class="news-meta" data-gallery-modal-meta></p>
-        <h2 id="gallery-modal-title" data-gallery-modal-title></h2>
-        <p data-gallery-modal-description></p>
-        <div data-gallery-modal-body></div>
+        <p class="news-meta" data-post-modal-meta></p>
+        <h2 id="gallery-modal-title" data-post-modal-title></h2>
+        <p data-post-modal-description></p>
+        <div data-post-modal-body></div>
       </div>
     </article>
   `;
   modal.addEventListener("click", (event) => {
-    if (event.target instanceof Element && event.target.closest("[data-gallery-modal-close]")) closeGalleryModal();
+    if (event.target instanceof Element && event.target.closest("[data-post-modal-close]")) closePostModal();
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !modal.hidden) closeGalleryModal();
+    if (event.key === "Escape" && !modal.hidden) closePostModal();
   });
   document.body.append(modal);
   return modal;
 };
 
-const renderGallery = () => {
-  const target = document.querySelector("[data-gallery-list]");
-  if (!target) return;
-  ensureGalleryModal();
+const renderPostBoard = (target) => {
+  ensurePostModal();
+  const posts = buildPostFeed();
 
-  target.innerHTML = (labData.gallery ?? [])
-    .map((item, index) => {
-      const media = item.image
-        ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.alt || item.caption)}" />`
-        : `<div class="gallery-placeholder" role="img" aria-label="${escapeHtml(item.alt || "사진 추가 자리")}">
-            <span>사진 추가</span>
-          </div>`;
-
-      return `
-        <figure class="${item.image ? "" : "empty-card"}">
-          <button class="gallery-trigger" type="button" data-gallery-index="${index}">
-            ${media}
-            <span class="gallery-caption">${escapeHtml(item.caption || item.title || "Gallery")}</span>
+  target.innerHTML = posts
+    .map(
+      (post, index) => `
+        <article class="post-card-wrap reveal">
+          <button class="post-card" type="button" data-post-index="${index}">
+            <span class="post-thumb-frame">${postMedia(post)}</span>
+            <span class="post-card-body">
+              <span class="news-meta">
+                ${post.date ? `<time>${escapeHtml(post.date)}</time>` : ""}
+                <span class="news-category">${escapeHtml(post.category)}</span>
+              </span>
+              <span class="post-card-title">${escapeHtml(post.title)}</span>
+              <span class="post-card-summary">${escapeHtml(post.description)}</span>
+            </span>
           </button>
-        </figure>
-      `;
-    })
+        </article>
+      `
+    )
     .join("");
 
-  target.querySelectorAll("[data-gallery-index]").forEach((button) => {
+  target.querySelectorAll("[data-post-index]").forEach((button) => {
     button.addEventListener("click", () => {
-      const index = Number(button.dataset.galleryIndex);
-      const item = (labData.gallery ?? [])[index];
-      if (item) openGalleryModal(item);
+      const post = posts[Number(button.dataset.postIndex)];
+      if (post) openPostModal(post);
     });
   });
+};
+
+const renderNews = () => {
+  document.querySelectorAll("[data-post-list], [data-news-list]").forEach(renderPostBoard);
+};
+
+const renderGallery = () => {
+  document.querySelectorAll("[data-gallery-list]").forEach(renderPostBoard);
 };
 
 const renderPatents = () => {
@@ -433,17 +456,20 @@ const renderHomeNews = () => {
   const target = document.querySelector("[data-home-news]");
   if (!target) return;
 
-  const items = (labData.news ?? []).filter((item) => !item.empty).slice(0, 3);
+  const items = buildPostFeed().slice(0, 3);
   target.innerHTML = items
     .map(
       (item) => `
         <a class="home-news-item" href="news.html">
-          <p class="news-meta">
-            ${item.date ? `<time>${escapeHtml(item.date)}</time>` : ""}
-            <span class="news-category">${escapeHtml(item.category)}</span>
-          </p>
-          <h3>${escapeHtml(item.title)}</h3>
-          <p>${escapeHtml(item.description)}</p>
+          <span class="home-news-thumb-frame">${postMedia(item, "home-news-thumb")}</span>
+          <span class="home-news-copy">
+            <span class="news-meta">
+              ${item.date ? `<time>${escapeHtml(item.date)}</time>` : ""}
+              <span class="news-category">${escapeHtml(item.category)}</span>
+            </span>
+            <span class="home-news-title">${escapeHtml(item.title)}</span>
+            <span class="home-news-summary">${escapeHtml(item.description)}</span>
+          </span>
         </a>
       `
     )

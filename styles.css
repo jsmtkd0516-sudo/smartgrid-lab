@@ -2386,6 +2386,121 @@ a.person-link:hover {
   font-size: 0.86rem;
 }
 
+.post-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.post-card-wrap {
+  min-width: 0;
+}
+
+.post-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  box-shadow: 0 16px 38px rgba(7, 23, 47, 0.08);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.post-card:hover,
+.post-card:focus-visible {
+  border-color: rgba(20, 95, 187, 0.34);
+  transform: translateY(-3px);
+  box-shadow: 0 24px 54px rgba(7, 23, 47, 0.14);
+}
+
+.post-thumb-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #dcecf5;
+}
+
+.post-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 220ms ease;
+}
+
+.post-card:hover .post-thumb,
+.post-card:focus-visible .post-thumb {
+  transform: scale(1.035);
+}
+
+.post-thumb-placeholder {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(135deg, rgba(20, 95, 187, 0.14), rgba(2, 194, 210, 0.18)),
+    #eef6fb;
+}
+
+.post-thumb-placeholder span {
+  padding: 6px 12px;
+  border: 1px solid rgba(20, 95, 187, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--blue-dark);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.post-card-body {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 18px 18px 20px;
+}
+
+.post-card-title {
+  color: var(--ink);
+  font-size: 1.08rem;
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.post-card-summary {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+@media (max-width: 1040px) {
+  .post-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .post-board {
+    grid-template-columns: 1fr;
+  }
+
+  .post-card {
+    min-height: 0;
+  }
+}
+
 .news-post-body {
   margin-top: 16px;
   padding-top: 14px;
@@ -2496,6 +2611,7 @@ button:focus-visible,
 .filter-button:focus-visible,
 .nav-top:focus-visible,
 .nav-menu a:focus-visible,
+.post-card:focus-visible,
 .gallery-trigger:focus-visible,
 .gallery-modal-close:focus-visible {
   outline: 2px solid var(--cyan);
@@ -2591,8 +2707,11 @@ button:focus-visible,
 .home-news-item {
   position: relative;
   overflow: hidden;
-  display: block;
-  padding: 20px;
+  display: grid;
+  grid-template-columns: 124px minmax(0, 1fr);
+  gap: 16px;
+  min-height: 154px;
+  padding: 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -2616,17 +2735,51 @@ button:focus-visible,
   border-color: rgba(59, 183, 232, 0.4);
 }
 
-.home-news-item h3 {
-  margin: 8px 0 6px;
+.home-news-thumb-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  align-self: stretch;
+  border-radius: calc(var(--radius) - 2px);
+  background: #e5f1f7;
+}
+
+.home-news-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 220ms ease;
+}
+
+.home-news-item:hover .home-news-thumb {
+  transform: scale(1.04);
+}
+
+.home-news-copy {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  padding: 4px 2px 4px 0;
+}
+
+.home-news-title {
   color: var(--ink);
   font-size: 1.05rem;
+  font-weight: 850;
   line-height: 1.3;
 }
 
-.home-news-item p:not(.news-meta) {
-  margin: 0;
+.home-news-summary {
+  display: -webkit-box;
+  overflow: hidden;
   color: var(--muted);
   font-size: 0.9rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .more-link {
@@ -2640,6 +2793,12 @@ button:focus-visible,
   .home-news {
     grid-template-columns: 1fr;
     max-width: 640px;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-news-item {
+    grid-template-columns: 1fr;
   }
 }
 
