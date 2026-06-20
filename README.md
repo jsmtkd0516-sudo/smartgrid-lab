@@ -9,7 +9,7 @@
 - `styles.css`: 반응형 레이아웃과 블루 계열 디자인 시스템
 - `script.js`: 콘텐츠 렌더링 + 논문 연도 필터·BibTeX + 전력계통 단선도 애니메이션 + 숫자 카운터
 - `data/lab-data.js`: 멤버·졸업생·논문·과제·특허·뉴스·갤러리 데이터
-- `editor.html`: 브라우저에서 여는 로컬 콘텐츠 편집기
+- `editor.html`: 브라우저에서 여는 로컬 전용 콘텐츠 편집기. 공개 저장소/Pages에는 올리지 않습니다.
 - `assets/hero-smart-grid.png`: 히어로 배경 / `assets/members/`·`assets/gallery/`: 사진 폴더
 - `LAB_PC_HANDOFF.md`: 연구실 컴퓨터에서 이어서 수정·배포하는 방법
 
@@ -22,7 +22,7 @@
 
 대부분의 내용은 `data/lab-data.js`만 고치면 됩니다.
 
-코드를 직접 만지기 어렵다면 아래 편집기를 먼저 쓰세요.
+코드를 직접 만지기 어렵다면 로컬 관리 PC에 있는 아래 편집기를 먼저 쓰세요. 이 파일은 공개 저장소에 커밋하지 않는 로컬 전용 파일입니다.
 
 ```text
 editor.html
@@ -41,6 +41,8 @@ http://localhost:5173/editor.html
 ```
 
 편집기에서 뉴스, 멤버, 과제, 논문, 실적, 갤러리를 수정한 뒤 `파일로 저장` 또는 `다운로드`를 눌러 `data/lab-data.js`를 교체합니다.
+
+새 PC를 clone했는데 `editor.html`이 없으면 `data/lab-data.js`를 직접 수정하거나, 기존 관리 PC의 로컬 전용 편집기를 따로 받아서 사용합니다.
 
 ## GitHub에 올리는 방법
 
