@@ -40,6 +40,7 @@
         { label: "Patents", href: "patents.html" },
       ],
     },
+    { label: "Recruiting", href: "recruiting.html" },
     { label: "News & Gallery", href: "news.html" },
   ];
 
@@ -54,6 +55,7 @@
     "research.html": "Research topics of Yonsei University Smartgrid Laboratory: HVDC, FACTS, grid dynamics, renewables, and smart grid operation.",
     "news.html": "News, notices, recruiting posts, and gallery updates from Yonsei University Smartgrid Laboratory.",
     "gallery.html": "News, notices, recruiting posts, and gallery updates from Yonsei University Smartgrid Laboratory.",
+    "recruiting.html": "Graduate student and undergraduate research opportunities at Yonsei University Smartgrid Laboratory.",
     "members.html": "Members of Yonsei University Smartgrid Laboratory.",
     "publications.html": "Publications from Yonsei University Smartgrid Laboratory.",
     "contact.html": "Contact information for Yonsei University Smartgrid Laboratory.",

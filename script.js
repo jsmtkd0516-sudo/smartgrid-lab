@@ -77,6 +77,7 @@ const defaultPageMeta = {
 const updateDefaultMeta = () => {
   document.title = defaultPageMeta.title;
   setMetaContent('meta[name="description"]', { name: "description" }, defaultPageMeta.description);
+  setMetaContent('meta[property="og:type"]', { property: "og:type" }, "website");
   setMetaContent('meta[property="og:title"]', { property: "og:title" }, defaultPageMeta.title);
   setMetaContent('meta[property="og:description"]', { property: "og:description" }, defaultPageMeta.description);
   setMetaContent('meta[property="og:image"]', { property: "og:image" }, defaultPageMeta.image);
@@ -419,6 +420,65 @@ const postMedia = (post, className = "post-thumb") =>
         <span>${escapeHtml(post.category || post.source || "Post")}</span>
       </span>`;
 
+const postCategoryKey = (post) => slugify(post.category || post.source || "Post") || "post";
+
+const postCategories = (posts) => {
+  const seen = new Map();
+  posts.forEach((post) => {
+    const key = postCategoryKey(post);
+    if (!seen.has(key)) seen.set(key, post.category || post.source || "Post");
+  });
+  return [...seen].map(([key, label]) => ({ key, label }));
+};
+
+const applyPostFilter = (board, key) => {
+  board.querySelectorAll("[data-post-category]").forEach((card) => {
+    card.classList.toggle("is-hidden", key !== "all" && card.dataset.postCategory !== key);
+  });
+};
+
+const renderPostFilters = (board, posts) => {
+  const filterBar = board.parentElement?.querySelector("[data-post-filters]");
+  if (!filterBar) return;
+
+  const categories = postCategories(posts);
+  if (categories.length < 2) {
+    filterBar.hidden = true;
+    return;
+  }
+
+  const active = categories.some((item) => item.key === filterBar.dataset.activeFilter)
+    ? filterBar.dataset.activeFilter
+    : "all";
+
+  filterBar.hidden = false;
+  filterBar.innerHTML = [
+    `<button class="post-filter-button" type="button" data-post-filter="all">All</button>`,
+    ...categories.map(
+      (item) =>
+        `<button class="post-filter-button" type="button" data-post-filter="${escapeHtml(item.key)}">${escapeHtml(
+          item.label
+        )}</button>`
+    ),
+  ].join("");
+
+  const update = (key) => {
+    filterBar.dataset.activeFilter = key;
+    filterBar.querySelectorAll("[data-post-filter]").forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.postFilter === key);
+    });
+    applyPostFilter(board, key);
+  };
+
+  filterBar.onclick = (event) => {
+    const button = event.target instanceof Element ? event.target.closest("[data-post-filter]") : null;
+    if (!button) return;
+    update(button.dataset.postFilter || "all");
+  };
+
+  update(active);
+};
+
 const getRoutePostId = () => {
   const params = new URLSearchParams(location.search);
   return params.get("post") || params.get("id") || decodeURIComponent(location.hash.replace(/^#/, ""));
@@ -551,7 +611,7 @@ const renderPostBoard = (target) => {
   target.innerHTML = posts
     .map(
       (post, index) => `
-        <article class="post-card-wrap reveal">
+        <article class="post-card-wrap reveal" data-post-category="${escapeHtml(postCategoryKey(post))}">
           <a class="post-card" href="${escapeHtml(postPermalink(post))}" data-post-id="${escapeHtml(post.id)}" data-post-index="${index}">
             <span class="post-thumb-frame">${postMedia(post)}</span>
             <span class="post-card-body">
@@ -567,6 +627,8 @@ const renderPostBoard = (target) => {
       `
     )
     .join("");
+
+  renderPostFilters(target, posts);
 
   target.querySelectorAll("[data-post-id]").forEach((link) => {
     link.addEventListener("click", (event) => {
@@ -715,7 +777,6 @@ const setupReveal = () => {
 };
 
 const setupHeroStats = () => {
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const members = (labData.members ?? []).filter((item) => !item.empty).length;
   const projects =
     (labData.projects ?? []).filter((item) => !item.empty && /active/i.test(item.status ?? "")).length +
@@ -726,21 +787,7 @@ const setupHeroStats = () => {
     const key = el.dataset.stat;
     if (!(key in targets)) return;
     const to = targets[key];
-
-    if (reduceMotion) {
-      el.textContent = String(to);
-      return;
-    }
-
-    const duration = 1200;
-    const start = performance.now();
-    const step = (now) => {
-      const progress = Math.min(1, (now - start) / duration);
-      const eased = 1 - (1 - progress) ** 3;
-      el.textContent = String(Math.round(to * eased));
-      if (progress < 1) window.requestAnimationFrame(step);
-    };
-    window.requestAnimationFrame(step);
+    el.textContent = String(to);
   });
 };
 
