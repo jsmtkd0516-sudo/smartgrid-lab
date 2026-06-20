@@ -48,6 +48,28 @@
     return !path ? "index.html" : path;
   })();
 
+  const SITE_BASE_URL = "https://jsmtkd0516-sudo.github.io/smartgrid-lab/";
+  const defaultDescriptions = {
+    "index.html": "Yonsei University Smartgrid Laboratory — power systems, HVDC, grid-forming converters, EMT analysis, and smart grid research.",
+    "research.html": "Research topics of Yonsei University Smartgrid Laboratory: HVDC, FACTS, grid dynamics, renewables, and smart grid operation.",
+    "news.html": "News, notices, recruiting posts, and gallery updates from Yonsei University Smartgrid Laboratory.",
+    "gallery.html": "News, notices, recruiting posts, and gallery updates from Yonsei University Smartgrid Laboratory.",
+    "members.html": "Members of Yonsei University Smartgrid Laboratory.",
+    "publications.html": "Publications from Yonsei University Smartgrid Laboratory.",
+    "contact.html": "Contact information for Yonsei University Smartgrid Laboratory.",
+  };
+  const pageUrl = new URL(current, SITE_BASE_URL).href;
+  const defaultImage = new URL("assets/hero-smart-grid.png", SITE_BASE_URL).href;
+  const ensureMeta = (selector, attrs, content) => {
+    let meta = document.head.querySelector(selector);
+    if (!meta) {
+      meta = document.createElement("meta");
+      Object.entries(attrs).forEach(([key, value]) => meta.setAttribute(key, value));
+      document.head.append(meta);
+    }
+    if (!meta.getAttribute("content")) meta.setAttribute("content", content);
+  };
+
   const isActive = (item) =>
     item.href === current ||
     (item.href === "news.html" && current === "gallery.html") ||
@@ -117,6 +139,27 @@
     theme.content = "#07172f";
     document.head.appendChild(theme);
   }
+  if (!document.querySelector('link[rel="canonical"]')) {
+    const canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    canonical.href = pageUrl;
+    document.head.appendChild(canonical);
+  }
+  const description =
+    document.querySelector('meta[name="description"]')?.content ||
+    defaultDescriptions[current] ||
+    "Yonsei University Smartgrid Laboratory website.";
+  ensureMeta('meta[name="description"]', { name: "description" }, description);
+  ensureMeta('meta[property="og:site_name"]', { property: "og:site_name" }, "Yonsei Smartgrid Laboratory");
+  ensureMeta('meta[property="og:type"]', { property: "og:type" }, "website");
+  ensureMeta('meta[property="og:title"]', { property: "og:title" }, document.title || "Yonsei Smartgrid Laboratory");
+  ensureMeta('meta[property="og:description"]', { property: "og:description" }, description);
+  ensureMeta('meta[property="og:image"]', { property: "og:image" }, defaultImage);
+  ensureMeta('meta[property="og:url"]', { property: "og:url" }, pageUrl);
+  ensureMeta('meta[name="twitter:card"]', { name: "twitter:card" }, "summary_large_image");
+  ensureMeta('meta[name="twitter:title"]', { name: "twitter:title" }, document.title || "Yonsei Smartgrid Laboratory");
+  ensureMeta('meta[name="twitter:description"]', { name: "twitter:description" }, description);
+  ensureMeta('meta[name="twitter:image"]', { name: "twitter:image" }, defaultImage);
 
   // 현재 페이지의 섹션/제목을 찾아 페이지 배너를 자동으로 얹는다 (Home 제외).
   const headerEl = document.querySelector("[data-header]");

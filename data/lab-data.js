@@ -952,11 +952,13 @@ window.labData = {
 
   /*
     news 항목 작성법:
+    - id: 게시글 고유 링크에 쓰는 영문 slug (예: "recruiting")
     - date: "2026.06" 처럼 적으면 뉴스 카드에 크게 표시됩니다 (비워도 됨)
     - image: 썸네일 사진 경로 (예: "assets/gallery/award.jpg", 없으면 "")
   */
   news: [
     {
+      id: "ai-sw-hvdc-center",
       date: "2026",
       category: "Research Center",
       title: "AI·SW HVDC 통합 전력계통 혁신연구센터",
@@ -967,6 +969,7 @@ window.labData = {
       image: "assets/research/power-electronics-hvdc.jpg",
     },
     {
+      id: "recruiting",
       date: "",
       category: "Recruiting",
       title: "석·박사 및 학부연구생 상시 모집",
@@ -977,6 +980,7 @@ window.labData = {
       image: "assets/research/monitoring-grid-dynamics.jpg",
     },
     {
+      id: "grid-forming-converter-grid",
       date: "",
       category: "Research",
       title: "Grid-forming · 컨버터 기반 전력망 연구",

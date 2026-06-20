@@ -19,6 +19,93 @@ const renderParagraphs = (value = "", className = "") => {
   return `<div${cls}>${paragraphs.map((part) => `<p>${escapeHtml(part)}</p>`).join("")}</div>`;
 };
 
+const SITE_BASE_URL = "https://jsmtkd0516-sudo.github.io/smartgrid-lab/";
+
+const toAbsoluteUrl = (path = "") => {
+  try {
+    return new URL(path || ".", SITE_BASE_URL).href;
+  } catch {
+    return SITE_BASE_URL;
+  }
+};
+
+const slugify = (value = "") =>
+  String(value)
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const makePostId = (preferred, fallback) => slugify(preferred) || slugify(fallback) || "post";
+const postPermalink = (post) => `news.html?post=${encodeURIComponent(post.id)}`;
+const absolutePostPermalink = (post) => toAbsoluteUrl(postPermalink(post));
+
+const setMetaContent = (selector, attrs, content) => {
+  if (!content) return;
+  let meta = document.head.querySelector(selector);
+  if (!meta) {
+    meta = document.createElement("meta");
+    Object.entries(attrs).forEach(([key, value]) => meta.setAttribute(key, value));
+    document.head.append(meta);
+  }
+  meta.setAttribute("content", content);
+};
+
+const setCanonicalUrl = (href) => {
+  let canonical = document.head.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement("link");
+    canonical.rel = "canonical";
+    document.head.append(canonical);
+  }
+  canonical.href = href;
+};
+
+const defaultPageMeta = {
+  title: document.title,
+  description: document.head.querySelector('meta[name="description"]')?.content || "",
+  image: document.head.querySelector('meta[property="og:image"]')?.content || toAbsoluteUrl("assets/hero-smart-grid.png"),
+  url: (() => {
+    const url = new URL(location.href);
+    url.search = "";
+    url.hash = "";
+    return url.href;
+  })(),
+};
+
+const updateDefaultMeta = () => {
+  document.title = defaultPageMeta.title;
+  setMetaContent('meta[name="description"]', { name: "description" }, defaultPageMeta.description);
+  setMetaContent('meta[property="og:title"]', { property: "og:title" }, defaultPageMeta.title);
+  setMetaContent('meta[property="og:description"]', { property: "og:description" }, defaultPageMeta.description);
+  setMetaContent('meta[property="og:image"]', { property: "og:image" }, defaultPageMeta.image);
+  setMetaContent('meta[property="og:url"]', { property: "og:url" }, defaultPageMeta.url);
+  setMetaContent('meta[name="twitter:title"]', { name: "twitter:title" }, defaultPageMeta.title);
+  setMetaContent('meta[name="twitter:description"]', { name: "twitter:description" }, defaultPageMeta.description);
+  setMetaContent('meta[name="twitter:image"]', { name: "twitter:image" }, defaultPageMeta.image);
+  setCanonicalUrl(defaultPageMeta.url);
+};
+
+const updatePostMeta = (post) => {
+  const title = `${post.title} · Yonsei Smartgrid Laboratory`;
+  const description = post.description || "Yonsei University Smartgrid Laboratory post.";
+  const image = post.image ? toAbsoluteUrl(post.image) : defaultPageMeta.image;
+  const url = absolutePostPermalink(post);
+  document.title = title;
+  setMetaContent('meta[name="description"]', { name: "description" }, description);
+  setMetaContent('meta[property="og:type"]', { property: "og:type" }, "article");
+  setMetaContent('meta[property="og:title"]', { property: "og:title" }, title);
+  setMetaContent('meta[property="og:description"]', { property: "og:description" }, description);
+  setMetaContent('meta[property="og:image"]', { property: "og:image" }, image);
+  setMetaContent('meta[property="og:url"]', { property: "og:url" }, url);
+  setMetaContent('meta[name="twitter:card"]', { name: "twitter:card" }, "summary_large_image");
+  setMetaContent('meta[name="twitter:title"]', { name: "twitter:title" }, title);
+  setMetaContent('meta[name="twitter:description"]', { name: "twitter:description" }, description);
+  setMetaContent('meta[name="twitter:image"]', { name: "twitter:image" }, image);
+  setCanonicalUrl(url);
+};
+
 const renderFeaturedProject = () => {
   const target = document.querySelector("[data-featured-project]");
   const item = labData.featuredProject;
@@ -262,7 +349,7 @@ const findRelatedNews = (item) => {
 const galleryPost = (item, index = 0) => {
   const related = findRelatedNews(item);
   return {
-    id: `gallery-${index}`,
+    id: item.id || item.slug || makePostId(item.caption || item.title || related?.title, `gallery-${index + 1}`),
     source: "Gallery",
     date: item.date || related?.date || "",
     category: item.category || related?.category || "Gallery",
@@ -276,11 +363,26 @@ const galleryPost = (item, index = 0) => {
 
 const titleKey = (value = "") => String(value).trim().toLowerCase();
 
+const ensureUniquePostIds = (posts) => {
+  const used = new Set();
+  return posts.map((post, index) => {
+    const base = makePostId(post.id || post.title, `${post.source || "post"}-${index + 1}`);
+    let id = base;
+    let suffix = 2;
+    while (used.has(id)) {
+      id = `${base}-${suffix}`;
+      suffix += 1;
+    }
+    used.add(id);
+    return { ...post, id };
+  });
+};
+
 const buildPostFeed = () => {
   const posts = (labData.news ?? [])
     .filter((item) => !item.empty)
     .map((item, index) => ({
-      id: `news-${index}`,
+      id: item.id || item.slug || makePostId(item.title, `news-${index + 1}`),
       source: "News",
       date: item.date || "",
       category: item.category || "News",
@@ -307,7 +409,7 @@ const buildPostFeed = () => {
       posts.push(galleryPost(item, index));
     });
 
-  return posts;
+  return ensureUniquePostIds(posts);
 };
 
 const postMedia = (post, className = "post-thumb") =>
@@ -317,14 +419,42 @@ const postMedia = (post, className = "post-thumb") =>
         <span>${escapeHtml(post.category || post.source || "Post")}</span>
       </span>`;
 
-const closePostModal = () => {
+const getRoutePostId = () => {
+  const params = new URLSearchParams(location.search);
+  return params.get("post") || params.get("id") || decodeURIComponent(location.hash.replace(/^#/, ""));
+};
+
+const setPostRoute = (post, replace = false) => {
+  const url = new URL(location.href);
+  url.searchParams.set("post", post.id);
+  url.searchParams.delete("id");
+  url.hash = "";
+  const method = replace ? "replaceState" : "pushState";
+  history[method]?.({ postId: post.id }, "", url);
+};
+
+const clearPostRoute = () => {
+  const url = new URL(location.href);
+  if (!url.searchParams.has("post") && !url.searchParams.has("id") && !url.hash) return;
+  url.searchParams.delete("post");
+  url.searchParams.delete("id");
+  url.hash = "";
+  history.pushState?.({}, "", url);
+};
+
+let activePostFeed = [];
+let postRouteBound = false;
+
+const closePostModal = (options = {}) => {
   const modal = document.querySelector("[data-post-modal]");
   if (!modal) return;
   modal.hidden = true;
   document.body.classList.remove("modal-open");
+  if (options.updateUrl !== false) clearPostRoute();
+  updateDefaultMeta();
 };
 
-const openPostModal = (post) => {
+const openPostModal = (post, options = {}) => {
   const modal = document.querySelector("[data-post-modal]");
   if (!modal) return;
 
@@ -338,10 +468,29 @@ const openPostModal = (post) => {
   modal.querySelector("[data-post-modal-title]").textContent = post.title;
   modal.querySelector("[data-post-modal-description]").textContent = post.description;
   modal.querySelector("[data-post-modal-body]").innerHTML = renderParagraphs(post.body || post.description, "news-post-body");
+  const link = modal.querySelector("[data-post-modal-link]");
+  if (link) link.href = postPermalink(post);
+  const copyButton = modal.querySelector("[data-post-modal-copy]");
+  if (copyButton) {
+    copyButton.dataset.postUrl = absolutePostPermalink(post);
+    copyButton.textContent = "링크 복사";
+  }
 
   modal.hidden = false;
   document.body.classList.add("modal-open");
+  updatePostMeta(post);
+  if (options.updateUrl !== false) setPostRoute(post, options.replaceUrl);
   modal.querySelector("[data-post-modal-close]")?.focus();
+};
+
+const handlePostRoute = () => {
+  const id = getRoutePostId();
+  if (!id) {
+    closePostModal({ updateUrl: false });
+    return;
+  }
+  const post = activePostFeed.find((item) => item.id === id);
+  if (post) openPostModal(post, { updateUrl: false });
 };
 
 const ensurePostModal = () => {
@@ -362,11 +511,30 @@ const ensurePostModal = () => {
         <h2 id="gallery-modal-title" data-post-modal-title></h2>
         <p data-post-modal-description></p>
         <div data-post-modal-body></div>
+        <div class="post-modal-actions">
+          <a class="post-modal-link" href="news.html" data-post-modal-link>게시글 링크 열기</a>
+          <button class="post-modal-copy" type="button" data-post-modal-copy>링크 복사</button>
+        </div>
       </div>
     </article>
   `;
   modal.addEventListener("click", (event) => {
     if (event.target instanceof Element && event.target.closest("[data-post-modal-close]")) closePostModal();
+    const copyButton = event.target instanceof Element ? event.target.closest("[data-post-modal-copy]") : null;
+    if (copyButton) {
+      const url = copyButton.dataset.postUrl || location.href;
+      navigator.clipboard
+        ?.writeText(url)
+        .then(() => {
+          copyButton.textContent = "복사됨";
+          window.setTimeout(() => {
+            copyButton.textContent = "링크 복사";
+          }, 1200);
+        })
+        .catch(() => {
+          copyButton.textContent = "복사 실패";
+        });
+    }
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !modal.hidden) closePostModal();
@@ -378,12 +546,13 @@ const ensurePostModal = () => {
 const renderPostBoard = (target) => {
   ensurePostModal();
   const posts = buildPostFeed();
+  activePostFeed = posts;
 
   target.innerHTML = posts
     .map(
       (post, index) => `
         <article class="post-card-wrap reveal">
-          <button class="post-card" type="button" data-post-index="${index}">
+          <a class="post-card" href="${escapeHtml(postPermalink(post))}" data-post-id="${escapeHtml(post.id)}" data-post-index="${index}">
             <span class="post-thumb-frame">${postMedia(post)}</span>
             <span class="post-card-body">
               <span class="news-meta">
@@ -393,18 +562,25 @@ const renderPostBoard = (target) => {
               <span class="post-card-title">${escapeHtml(post.title)}</span>
               <span class="post-card-summary">${escapeHtml(post.description)}</span>
             </span>
-          </button>
+          </a>
         </article>
       `
     )
     .join("");
 
-  target.querySelectorAll("[data-post-index]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const post = posts[Number(button.dataset.postIndex)];
+  target.querySelectorAll("[data-post-id]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const post = posts.find((item) => item.id === link.dataset.postId);
       if (post) openPostModal(post);
     });
   });
+
+  if (!postRouteBound) {
+    window.addEventListener("popstate", handlePostRoute);
+    postRouteBound = true;
+  }
+  handlePostRoute();
 };
 
 const renderNews = () => {
@@ -460,7 +636,7 @@ const renderHomeNews = () => {
   target.innerHTML = items
     .map(
       (item) => `
-        <a class="home-news-item" href="news.html">
+        <a class="home-news-item" href="${escapeHtml(postPermalink(item))}">
           <span class="home-news-thumb-frame">${postMedia(item, "home-news-thumb")}</span>
           <span class="home-news-copy">
             <span class="news-meta">

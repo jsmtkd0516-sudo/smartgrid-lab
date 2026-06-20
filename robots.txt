@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jsmtkd0516-sudo.github.io/smartgrid-lab/sitemap.xml
