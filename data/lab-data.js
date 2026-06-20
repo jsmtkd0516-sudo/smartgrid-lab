@@ -992,17 +992,35 @@ window.labData = {
   gallery: [
     {
       caption: "Lab Photo",
+      date: "",
+      category: "Gallery",
+      description: "연구실 단체 사진 자리",
+      body:
+        "연구실 구성원 사진과 행사 기록을 이곳에 추가하세요. 관리자 편집기에서 실제 사진, 날짜, 설명을 채우면 갤러리와 상세 공지창이 함께 업데이트됩니다.",
       image: "",
+      relatedNewsTitle: "",
       alt: "연구실 단체 사진 자리",
     },
     {
       caption: "Conference",
+      date: "",
+      category: "Conference",
+      description: "학회 발표와 연구 교류 활동 사진 자리",
+      body:
+        "학회 발표, 포스터 세션, 수상, 연구 교류 사진을 등록하는 공간입니다. 연결할 뉴스 제목을 입력하면 해당 뉴스 본문을 함께 보여줄 수 있습니다.",
       image: "",
+      relatedNewsTitle: "",
       alt: "학회 발표 사진 자리",
     },
     {
       caption: "Research Demo",
+      date: "",
+      category: "Research",
+      description: "실험 장비와 연구 시연 사진 자리",
+      body:
+        "전력계통 해석, HVDC, 전력전자, AI 기반 운영 연구의 실험 장면과 시연 이미지를 소개하는 공간입니다.",
       image: "",
+      relatedNewsTitle: "",
       alt: "연구 데모 사진 자리",
     },
   ],

@@ -281,12 +281,91 @@ const renderNews = () => {
     .join("");
 };
 
+const findRelatedNews = (item) => {
+  const key = (item.relatedNewsTitle || item.newsTitle || item.caption || "").trim().toLowerCase();
+  if (!key) return null;
+  return (labData.news ?? []).find((news) => !news.empty && String(news.title || "").trim().toLowerCase() === key) || null;
+};
+
+const galleryPost = (item) => {
+  const related = findRelatedNews(item);
+  return {
+    date: item.date || related?.date || "",
+    category: item.category || related?.category || "Gallery",
+    title: item.title || item.caption || related?.title || "Gallery",
+    description: item.description || related?.description || item.alt || "",
+    body: item.body || related?.body || "",
+    image: item.image || related?.image || "",
+    alt: item.alt || item.caption || related?.title || "Gallery image",
+  };
+};
+
+const closeGalleryModal = () => {
+  const modal = document.querySelector("[data-gallery-modal]");
+  if (!modal) return;
+  modal.hidden = true;
+  document.body.classList.remove("modal-open");
+};
+
+const openGalleryModal = (item) => {
+  const modal = document.querySelector("[data-gallery-modal]");
+  if (!modal) return;
+
+  const post = galleryPost(item);
+  modal.querySelector("[data-gallery-modal-media]").innerHTML = post.image
+    ? `<img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.alt)}" />`
+    : `<div class="gallery-placeholder"><span>사진 추가</span></div>`;
+  modal.querySelector("[data-gallery-modal-meta]").innerHTML = `
+    ${post.date ? `<time>${escapeHtml(post.date)}</time>` : ""}
+    <span class="news-category">${escapeHtml(post.category)}</span>
+  `;
+  modal.querySelector("[data-gallery-modal-title]").textContent = post.title;
+  modal.querySelector("[data-gallery-modal-description]").textContent = post.description;
+  modal.querySelector("[data-gallery-modal-body]").innerHTML = renderParagraphs(post.body, "news-post-body");
+
+  modal.hidden = false;
+  document.body.classList.add("modal-open");
+  modal.querySelector("[data-gallery-modal-close]")?.focus();
+};
+
+const ensureGalleryModal = () => {
+  let modal = document.querySelector("[data-gallery-modal]");
+  if (modal) return modal;
+
+  modal = document.createElement("div");
+  modal.className = "gallery-modal";
+  modal.hidden = true;
+  modal.dataset.galleryModal = "";
+  modal.innerHTML = `
+    <div class="gallery-modal-backdrop" data-gallery-modal-close></div>
+    <article class="gallery-modal-card" role="dialog" aria-modal="true" aria-labelledby="gallery-modal-title">
+      <button class="gallery-modal-close" type="button" aria-label="닫기" data-gallery-modal-close>&times;</button>
+      <div class="gallery-modal-media" data-gallery-modal-media></div>
+      <div class="gallery-modal-body">
+        <p class="news-meta" data-gallery-modal-meta></p>
+        <h2 id="gallery-modal-title" data-gallery-modal-title></h2>
+        <p data-gallery-modal-description></p>
+        <div data-gallery-modal-body></div>
+      </div>
+    </article>
+  `;
+  modal.addEventListener("click", (event) => {
+    if (event.target instanceof Element && event.target.closest("[data-gallery-modal-close]")) closeGalleryModal();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) closeGalleryModal();
+  });
+  document.body.append(modal);
+  return modal;
+};
+
 const renderGallery = () => {
   const target = document.querySelector("[data-gallery-list]");
   if (!target) return;
+  ensureGalleryModal();
 
   target.innerHTML = (labData.gallery ?? [])
-    .map((item) => {
+    .map((item, index) => {
       const media = item.image
         ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.alt || item.caption)}" />`
         : `<div class="gallery-placeholder" role="img" aria-label="${escapeHtml(item.alt || "사진 추가 자리")}">
@@ -295,12 +374,22 @@ const renderGallery = () => {
 
       return `
         <figure class="${item.image ? "" : "empty-card"}">
-          ${media}
-          <figcaption>${escapeHtml(item.caption)}</figcaption>
+          <button class="gallery-trigger" type="button" data-gallery-index="${index}">
+            ${media}
+            <span class="gallery-caption">${escapeHtml(item.caption || item.title || "Gallery")}</span>
+          </button>
         </figure>
       `;
     })
     .join("");
+
+  target.querySelectorAll("[data-gallery-index]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const index = Number(button.dataset.galleryIndex);
+      const item = (labData.gallery ?? [])[index];
+      if (item) openGalleryModal(item);
+    });
+  });
 };
 
 const renderPatents = () => {

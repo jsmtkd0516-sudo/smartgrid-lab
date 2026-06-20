@@ -42,6 +42,10 @@ body.nav-open {
   overflow: hidden;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -1239,6 +1243,45 @@ a {
   box-shadow: none;
 }
 
+.gallery-trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.gallery-trigger::after {
+  content: "자세히 보기";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  min-height: 28px;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(7, 23, 47, 0.58);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+  backdrop-filter: blur(10px);
+}
+
+.gallery-trigger:hover::after,
+.gallery-trigger:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .gallery-grid figure:first-child {
   grid-row: span 2;
 }
@@ -1248,6 +1291,12 @@ a {
   height: 100%;
   object-fit: cover;
   filter: saturate(1.03) contrast(1.02);
+  transition: transform 220ms ease;
+}
+
+.gallery-trigger:hover img,
+.gallery-trigger:focus-visible img {
+  transform: scale(1.035);
 }
 
 .gallery-placeholder {
@@ -1280,7 +1329,8 @@ a {
   object-position: 38% 56%;
 }
 
-.gallery-grid figcaption {
+.gallery-grid figcaption,
+.gallery-caption {
   position: absolute;
   left: 14px;
   bottom: 14px;
@@ -1506,6 +1556,20 @@ a {
 
   .gallery-grid figure:first-child {
     grid-row: span 1;
+  }
+
+  .gallery-modal {
+    padding: 14px;
+  }
+
+  .gallery-modal-card {
+    grid-template-columns: 1fr;
+    width: calc(100vw - 28px);
+  }
+
+  .gallery-modal-media {
+    min-height: 230px;
+    max-height: 34vh;
   }
 }
 
@@ -2338,12 +2402,102 @@ a.person-link:hover {
   margin-top: 10px;
 }
 
+.gallery-modal[hidden] {
+  display: none;
+}
+
+.gallery-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.gallery-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 16, 33, 0.68);
+  backdrop-filter: blur(10px);
+}
+
+.gallery-modal-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.92fr) minmax(320px, 1fr);
+  overflow: hidden;
+  width: min(980px, calc(100vw - 36px));
+  max-height: min(760px, calc(100vh - 36px));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.36);
+}
+
+.gallery-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(7, 23, 47, 0.62);
+  color: #fff;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.gallery-modal-media {
+  min-height: 360px;
+  background: #dcecf5;
+}
+
+.gallery-modal-media img,
+.gallery-modal-media .gallery-placeholder {
+  width: 100%;
+  height: 100%;
+}
+
+.gallery-modal-media img {
+  object-fit: cover;
+}
+
+.gallery-modal-body {
+  min-width: 0;
+  overflow: auto;
+  padding: clamp(22px, 4vw, 36px);
+}
+
+.gallery-modal-body h2 {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  line-height: 1.15;
+}
+
+.gallery-modal-body > p:not(.news-meta) {
+  margin: 0;
+  color: var(--muted);
+}
+
+.gallery-modal-body .news-post-body {
+  margin-top: 18px;
+}
+
 /* 접근성: 키보드 포커스 표시 */
 a:focus-visible,
 button:focus-visible,
 .filter-button:focus-visible,
 .nav-top:focus-visible,
-.nav-menu a:focus-visible {
+.nav-menu a:focus-visible,
+.gallery-trigger:focus-visible,
+.gallery-modal-close:focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 2px;
   border-radius: 4px;
