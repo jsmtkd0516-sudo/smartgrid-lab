@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
     <title>Smartgrid Lab Content Editor</title>
     <style>
       :root {
@@ -36,6 +37,10 @@
         line-height: 1.55;
       }
 
+      [hidden] {
+        display: none !important;
+      }
+
       button,
       input,
       textarea {
@@ -44,6 +49,65 @@
 
       button {
         cursor: pointer;
+      }
+
+      .login-screen {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background:
+          linear-gradient(120deg, rgba(5, 16, 33, 0.94), rgba(20, 95, 187, 0.82)),
+          #07172f;
+      }
+
+      .login-card {
+        width: min(430px, 100%);
+        padding: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: var(--radius);
+        background: #fff;
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.26);
+      }
+
+      .login-card h1 {
+        margin: 0;
+        font-size: 1.45rem;
+        line-height: 1.2;
+      }
+
+      .login-card p {
+        margin: 8px 0 20px;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      .login-form {
+        display: grid;
+        gap: 12px;
+      }
+
+      .login-form label {
+        display: grid;
+        gap: 6px;
+        color: var(--ink);
+        font-weight: 800;
+      }
+
+      .login-form input {
+        width: 100%;
+        min-height: 42px;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #fff;
+      }
+
+      .login-message {
+        min-height: 22px;
+        margin: 0;
+        color: #9b2525;
+        font-size: 0.88rem;
       }
 
       .app-shell {
@@ -343,6 +407,49 @@
         line-height: 1.48;
       }
 
+      .post-preview {
+        margin-top: 18px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: #f8fafc;
+      }
+
+      .post-preview .preview-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0 0 8px;
+        color: var(--blue);
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .post-preview h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        line-height: 1.25;
+      }
+
+      .post-preview .preview-summary {
+        margin: 10px 0 0;
+        color: var(--muted);
+      }
+
+      .post-preview .preview-body {
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      .post-preview .preview-body p {
+        margin: 0;
+      }
+
+      .post-preview .preview-body p + p {
+        margin-top: 8px;
+      }
+
       .empty-state {
         padding: 28px;
         color: var(--muted);
@@ -397,7 +504,26 @@
     </style>
   </head>
   <body>
-    <div class="app-shell">
+    <section class="login-screen" data-login-screen>
+      <form class="login-card" data-login-form>
+        <h1>Smartgrid Lab 관리자 로그인</h1>
+        <p>콘텐츠 편집기는 관리자 계정으로 로그인한 뒤 사용할 수 있습니다.</p>
+        <div class="login-form">
+          <label>
+            아이디
+            <input type="text" autocomplete="username" data-login-id />
+          </label>
+          <label>
+            비밀번호
+            <input type="password" autocomplete="current-password" data-login-password />
+          </label>
+          <button class="button primary" type="submit">로그인</button>
+          <p class="login-message" data-login-message></p>
+        </div>
+      </form>
+    </section>
+
+    <div class="app-shell" data-editor-app hidden>
       <header class="topbar">
         <div>
           <h1>Smartgrid Lab 콘텐츠 편집기</h1>
@@ -408,6 +534,7 @@
           <button class="button" type="button" data-action="copy">복사</button>
           <button class="button" type="button" data-action="download">다운로드</button>
           <button class="button primary" type="button" data-action="save">파일로 저장</button>
+          <button class="button" type="button" data-action="logout">로그아웃</button>
         </div>
       </header>
 
@@ -438,12 +565,52 @@
     <input hidden type="file" accept=".js,.json" data-file-input />
     <script src="data/lab-data.js"></script>
     <script>
+      const ADMIN_AUTH = {
+        username: "smartgrid",
+        passwordHash: "bff356bf4ba2af58bae3573445e2cbd3401ddafd54a83e8f54a206b71c120968",
+        sessionKey: "smartgrid-lab-editor-authenticated",
+      };
+
+      const loginScreen = document.querySelector("[data-login-screen]");
+      const loginForm = document.querySelector("[data-login-form]");
+      const loginId = document.querySelector("[data-login-id]");
+      const loginPassword = document.querySelector("[data-login-password]");
+      const loginMessage = document.querySelector("[data-login-message]");
+      const editorApp = document.querySelector("[data-editor-app]");
+
+      const hashText = async (value) => {
+        if (!window.crypto?.subtle) {
+          throw new Error("이 브라우저에서는 보안 해시 기능을 사용할 수 없습니다. localhost 서버로 열어주세요.");
+        }
+        const data = new TextEncoder().encode(value);
+        const digest = await crypto.subtle.digest("SHA-256", data);
+        return Array.from(new Uint8Array(digest))
+          .map((byte) => byte.toString(16).padStart(2, "0"))
+          .join("");
+      };
+
+      const unlockEditor = () => {
+        loginScreen.hidden = true;
+        editorApp.hidden = false;
+        render();
+      };
+
+      const showLogin = () => {
+        editorApp.hidden = true;
+        loginScreen.hidden = false;
+        loginId.focus();
+      };
+
       const loadedData = window.labData || {};
       let state = structuredClone(loadedData);
       let currentSection = "news";
       const selectedIndex = {};
 
       const field = (path, label, kind = "text", hint = "") => ({ path, label, kind, hint });
+      const currentMonth = () => {
+        const now = new Date();
+        return `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, "0")}`;
+      };
 
       const sections = {
         featuredProject: {
@@ -458,15 +625,23 @@
           ],
         },
         news: {
-          label: "뉴스",
+          label: "뉴스 게시글",
           type: "array",
-          description: "메인 뉴스와 News 페이지에 표시됩니다.",
-          template: { date: "", category: "Research", title: "새 소식", description: "", image: "" },
+          description: "메인 뉴스와 News 페이지에 표시되는 게시글입니다. 제목, 요약, 본문을 작성한 뒤 저장하세요.",
+          template: () => ({
+            date: currentMonth(),
+            category: "Notice",
+            title: "새 게시글 제목",
+            description: "메인 화면과 목록에 보일 짧은 요약을 입력하세요.",
+            body: "",
+            image: "",
+          }),
           fields: [
             field("date", "날짜", "text", "예: 2026.06"),
             field("category", "분류"),
             field("title", "제목"),
-            field("description", "설명", "textarea"),
+            field("description", "요약", "textarea"),
+            field("body", "본문", "textarea", "여러 문단은 줄바꿈으로 구분하세요."),
             field("image", "이미지 경로", "text", "예: assets/gallery/news.jpg"),
             field("empty", "자리표시자", "checkbox"),
           ],
@@ -572,6 +747,9 @@
         target[parts.at(-1)] = value;
       };
 
+      const createTemplate = (section) =>
+        structuredClone(typeof section.template === "function" ? section.template() : section.template);
+
       const summarize = (item, index) => {
         if (!item || typeof item !== "object") return [`항목 ${index + 1}`, ""];
         const title = item.title || item.name || item.caption || item.label || `항목 ${index + 1}`;
@@ -626,6 +804,7 @@
           else nextValue = input.value;
           setPath(item, config.path, nextValue);
           if (config.kind !== "textarea") renderListOnly();
+          refreshNewsPreview();
           setStatus("수정됨. 저장하려면 오른쪽 위 `파일로 저장` 또는 `다운로드`를 누르세요.", "warn");
         };
 
@@ -656,6 +835,49 @@
         workspace.append(panel);
       };
 
+      const appendText = (target, tag, text, className = "") => {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        node.textContent = text || "";
+        target.append(node);
+        return node;
+      };
+
+      const refreshNewsPreview = () => {
+        const preview = document.querySelector("[data-news-preview]");
+        if (!preview) return;
+        const item = state.news?.[selectedIndex.news] || {};
+        preview.textContent = "";
+
+        const meta = document.createElement("p");
+        meta.className = "preview-meta";
+        appendText(meta, "span", item.date || "날짜 없음");
+        appendText(meta, "span", item.category || "분류 없음");
+        preview.append(meta);
+
+        appendText(preview, "h3", item.title || "제목 없음");
+        appendText(preview, "p", item.description || "요약 없음", "preview-summary");
+
+        const bodyParts = String(item.body || "")
+          .split(/\n{2,}|\r?\n/)
+          .map((part) => part.trim())
+          .filter(Boolean);
+        if (bodyParts.length) {
+          const body = document.createElement("div");
+          body.className = "preview-body";
+          bodyParts.forEach((part) => appendText(body, "p", part));
+          preview.append(body);
+        }
+      };
+
+      const renderNewsPreview = (target) => {
+        const preview = document.createElement("article");
+        preview.className = "post-preview";
+        preview.dataset.newsPreview = "";
+        target.append(preview);
+        refreshNewsPreview();
+      };
+
       const renderArrayEditor = (key, section) => {
         if (!Array.isArray(state[key])) state[key] = [];
         const list = state[key];
@@ -670,9 +892,10 @@
 
         const toolbar = document.createElement("div");
         toolbar.className = "panel-toolbar";
+        const addLabel = key === "news" ? "새 게시글" : "추가";
         [
-          ["추가", () => {
-            list.push(structuredClone(section.template));
+          [addLabel, () => {
+            list.push(createTemplate(section));
             selectedIndex[key] = list.length - 1;
             setStatus("항목을 추가했습니다.", "warn");
             render();
@@ -733,6 +956,7 @@
         if (selected) section.fields.forEach((item) => renderField(form, selected, item));
         else form.textContent = "편집할 항목이 없습니다.";
         formPanel.append(form);
+        if (key === "news" && selected) renderNewsPreview(formPanel);
         grid.append(formPanel);
         workspace.append(grid);
       };
@@ -941,7 +1165,36 @@
         fileInput.value = "";
       });
 
-      render();
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        loginMessage.textContent = "";
+        const username = loginId.value.trim();
+        const password = loginPassword.value;
+        try {
+          const hash = await hashText(`${username}:${password}`);
+          if (username !== ADMIN_AUTH.username || hash !== ADMIN_AUTH.passwordHash) {
+            loginMessage.textContent = "아이디 또는 비밀번호가 맞지 않습니다.";
+            loginPassword.select();
+            return;
+          }
+          sessionStorage.setItem(ADMIN_AUTH.sessionKey, "1");
+          loginPassword.value = "";
+          unlockEditor();
+        } catch (error) {
+          loginMessage.textContent = error.message;
+        }
+      });
+
+      document.querySelector("[data-action='logout']").addEventListener("click", () => {
+        sessionStorage.removeItem(ADMIN_AUTH.sessionKey);
+        showLogin();
+      });
+
+      if (sessionStorage.getItem(ADMIN_AUTH.sessionKey) === "1") {
+        unlockEditor();
+      } else {
+        showLogin();
+      }
     </script>
   </body>
 </html>

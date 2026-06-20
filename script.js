@@ -9,6 +9,16 @@ const escapeHtml = (value = "") =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 
+const renderParagraphs = (value = "", className = "") => {
+  const paragraphs = String(value)
+    .split(/\n{2,}|\r?\n/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (!paragraphs.length) return "";
+  const cls = className ? ` class="${className}"` : "";
+  return `<div${cls}>${paragraphs.map((part) => `<p>${escapeHtml(part)}</p>`).join("")}</div>`;
+};
+
 const renderFeaturedProject = () => {
   const target = document.querySelector("[data-featured-project]");
   const item = labData.featuredProject;
@@ -263,6 +273,7 @@ const renderNews = () => {
             </p>
             <h3>${escapeHtml(item.title)}</h3>
             <p>${escapeHtml(item.description)}</p>
+            ${renderParagraphs(item.body, "news-post-body")}
           </div>
         </article>
       `;
