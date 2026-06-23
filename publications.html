@@ -8,23 +8,27 @@
     <script>
       document.documentElement.classList.add("js-ready");
     </script>
-    <link rel="stylesheet" href="styles.css?v=20260621-ops-upgrade" />
+    <link rel="stylesheet" href="styles.css?v=20260622-cards" />
   </head>
   <body>
     <header class="site-header" data-header data-site-header></header>
 
     <main>
       <section class="section publication-section">
-        <p class="page-lead reveal">연도순으로 정리한 연구실 저널 논문 아카이브입니다.</p>
+        <p class="page-lead reveal">
+          전력계통·HVDC·재생에너지·계통안정도 전반의 연구실 논문 아카이브입니다. 유형·주제·최신순으로 추려서 볼 수 있습니다.
+        </p>
 
+        <div class="pub-summary" data-pub-summary></div>
+        <div class="filter-bar" data-pub-filter-bar></div>
         <div class="publication-list" data-publication-list></div>
       </section>
     </main>
 
     <div data-site-footer></div>
 
-    <script src="data/lab-data.js?v=20260621-ops-upgrade"></script>
-    <script src="chrome.js?v=20260621-ops-upgrade"></script>
-    <script src="script.js?v=20260621-ops-upgrade"></script>
+    <script src="data/lab-data.js?v=20260622-cards"></script>
+    <script src="chrome.js?v=20260622-cards"></script>
+    <script src="script.js?v=20260622-cards"></script>
   </body>
 </html>

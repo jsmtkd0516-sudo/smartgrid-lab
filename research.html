@@ -8,7 +8,7 @@
     <script>
       document.documentElement.classList.add("js-ready");
     </script>
-    <link rel="stylesheet" href="styles.css?v=20260621-ops-upgrade" />
+    <link rel="stylesheet" href="styles.css?v=20260622-cards" />
   </head>
   <body>
     <header class="site-header" data-header data-site-header></header>
@@ -16,11 +16,11 @@
     <main>
       <section class="section research-section" id="research">
         <p class="page-lead reveal">
-          전력전자·HVDC, 계통 감시·동특성, 재생에너지·스마트그리드의 세 축으로 한 공식 연구분야 구성입니다.
+          전력전자·HVDC, 계통 감시·동특성, 재생에너지·스마트그리드에 AI 기반 운영 보조 연구를 연결합니다.
         </p>
 
         <div class="research-topics">
-          <article class="topic-col reveal">
+          <article class="topic-col reveal" data-topic-key="hvdc">
             <figure class="topic-visual">
               <img
                 src="assets/research/power-electronics-hvdc.jpg"
@@ -56,9 +56,10 @@
               <span class="en">ElectroMagnetic Transient (EMT) Modeling</span>
               <p>전력계통 해석을 위한 전자기 과도현상 모델링과 시뮬레이션 정확도를 다룹니다.</p>
             </div>
+            <div class="topic-links" data-topic-links></div>
           </article>
 
-          <article class="topic-col reveal">
+          <article class="topic-col reveal" data-topic-key="stability">
             <figure class="topic-visual">
               <img
                 src="assets/research/monitoring-grid-dynamics.jpg"
@@ -89,9 +90,10 @@
               <span class="en">Power Quality: Harmonic Filter, SVC, Active Filtering</span>
               <p>고조파 필터 설계, SVC, 능동필터를 활용한 전력품질 개선 방안을 설계합니다.</p>
             </div>
+            <div class="topic-links" data-topic-links></div>
           </article>
 
-          <article class="topic-col reveal">
+          <article class="topic-col reveal" data-topic-key="renewable">
             <figure class="topic-visual">
               <img
                 src="assets/research/renewable-smart-grid.jpg"
@@ -122,8 +124,47 @@
               <span class="en">Superconducting Power Applications: Fault Current Controller</span>
               <p>자가치유 전력망을 위한 초전도 사고전류 제어기 등 초전도 전력 응용을 연구합니다.</p>
             </div>
+            <div class="topic-links" data-topic-links></div>
           </article>
         </div>
+
+        <section class="ai-operation-panel reveal" aria-labelledby="ai-operation-title">
+          <div class="ai-operation-media">
+            <img
+              src="assets/research/ai-copilot-voltage-frequency-portrait.png"
+              alt="Synthetic voltage and frequency response concept visual"
+              loading="lazy"
+            />
+          </div>
+          <div class="ai-operation-copy">
+            <p class="eyebrow">Emerging Focus</p>
+            <h2 id="ai-operation-title">AI-driven Operation &amp; Grid Services</h2>
+            <p>
+              재생에너지와 전력전자 기반 설비가 확대되는 전력망에서는 전압·주파수·동요 안정도,
+              약계통 조건, 운영예비력과 Grid Service 요구량을 함께 판단해야 합니다. 연구실은
+              물리 기반 시뮬레이션과 AI 기반 분석 자동화를 결합해 운영자가 검토할 수 있는
+              의사결정 보조 도구를 연구합니다.
+            </p>
+            <div class="ai-operation-points" aria-label="AI operation research points">
+              <article>
+                <span>Stability</span>
+                <strong>전압·주파수·동요 안정도 평가</strong>
+                <p>사고 후 응답, nadir, RoCoF, damping, stability margin을 함께 분석합니다.</p>
+              </article>
+              <article>
+                <span>Grid Services</span>
+                <strong>운영예비력과 서비스 요구량 산정</strong>
+                <p>Dynamic Operating Reserve와 voltage/reactive support의 크기와 위치를 검토합니다.</p>
+              </article>
+              <article>
+                <span>Decision Support</span>
+                <strong>운영자 검토형 AI 보조</strong>
+                <p>AI는 후보를 선별하고 설명을 붙이며, 최종 판단은 물리 검증과 운영자 검토를 거칩니다.</p>
+              </article>
+            </div>
+            <a class="more-link" href="news.html?post=ai-copilot-grid-operation">관련 게시글 보기 &rarr;</a>
+          </div>
+        </section>
 
         <section class="research-evidence-section reveal" aria-labelledby="research-map-title">
           <div class="section-heading compact">
@@ -148,7 +189,7 @@
               <ul>
                 <li>PSS/E, EMT, MMC, grid-forming converter 모델링</li>
                 <li>PMU·전력품질 데이터 기반 계통 감시</li>
-                <li>AI/SW 기반 분석 자동화와 운영 보조</li>
+                <li>AI/SW 기반 안정도 평가와 운영 의사결정 보조</li>
               </ul>
             </article>
             <article>
@@ -157,7 +198,7 @@
               <ul>
                 <li>국제 저널·학회 논문과 특허</li>
                 <li>산학·국제 공동연구 과제</li>
-                <li>시뮬레이션, 검증, 운영 의사결정 도구</li>
+                <li>시뮬레이션, 검증, Grid Service 산정 도구</li>
               </ul>
             </article>
           </div>
@@ -173,8 +214,8 @@
 
     <div data-site-footer></div>
 
-    <script src="data/lab-data.js?v=20260621-ops-upgrade"></script>
-    <script src="chrome.js?v=20260621-ops-upgrade"></script>
-    <script src="script.js?v=20260621-ops-upgrade"></script>
+    <script src="data/lab-data.js?v=20260622-cards"></script>
+    <script src="chrome.js?v=20260622-cards"></script>
+    <script src="script.js?v=20260622-cards"></script>
   </body>
 </html>

@@ -411,6 +411,13 @@ window.labData = {
       tags: ["2020"],
     },
     {
+      year: "2020",
+      title: "Evaluating the Influence of Momentary Cessation Mode in Inverter-Based Distributed Generators on Power System Transient Stability",
+      authors: "Shin, H., Jung, J., Oh, S., Hur, K., Iba, K., Lee, B.",
+      venue: "IEEE Transactions on Power Systems, Vol. 35, No. 2 (Mar 2020)",
+      tags: ["2020"],
+    },
+    {
       year: "2019",
       title: "On Droop Control of Energy-Constrained Battery Energy Storage Systems for Grid Frequency Regulation",
       authors: "Shim, J., Verbic, G., Kim, H., Hur, K.",
@@ -503,6 +510,13 @@ window.labData = {
     },
     {
       year: "2016",
+      title: "Stable Adaptive Inertial Control of a Doubly-Fed Induction Generator",
+      authors: "Kang, M., Muljadi, E., Hur, K., Kang, Y.C.",
+      venue: "IEEE Transactions on Smart Grid, Vol. 7, No. 6 (Nov 2016)",
+      tags: ["earlier"],
+    },
+    {
+      year: "2016",
       title: "A Framework to Analyze the Stochastic Harmonics and Resonance of Wind Energy Grid Interconnection",
       authors: "Cho, Y., Lee, C., Hur, K., Kang, Y.C., Muljadi, E., Park, S.-H., Choy, Y.-D., Yoon, G.-G.",
       venue: "Energies, Vol. 9, No. 9 (Aug 2016)",
@@ -527,6 +541,20 @@ window.labData = {
       title: "Fast and reliable estimation of composite load model parameters using analytical similarity of parameter sensitivity",
       authors: "Kim, J.-K., An, K., Ma, J., Shin, J., Song, K.-B., Park, J.-D., Park, J.-W., Hur, K.",
       venue: "IEEE Transactions on Power Systems, Vol. 31, No. 1, pp. 663-671 (Jan 2016)",
+      tags: ["earlier"],
+    },
+    {
+      year: "2014",
+      title: "Improvement of Composite Load Modeling Based on Parameter Sensitivity and Dependency Analyses",
+      authors: "Son, S., Lee, S.H., Choi, D.H., Song, K.B., Park, J.D., Kwon, Y.H., Hur, K., Park, J.W.",
+      venue: "IEEE Transactions on Power Systems, Vol. 29, No. 2 (Feb 2014)",
+      tags: ["earlier"],
+    },
+    {
+      year: "2014",
+      title: "수퍼그리드 적용을 위한 멀티터미널 HVDC 및 DC 그리드",
+      authors: "Hur, K.",
+      venue: "전기의 세계, Vol. 63, No. 7 (2014)",
       tags: ["earlier"],
     },
     {
@@ -875,9 +903,22 @@ window.labData = {
     ],
   },
 
-  // 특허: 공식 사이트 Patents 기준 (국제 6 · 국내 31). 번호·날짜는 사이트 표기 그대로 — 게시 전 검수 권장.
+  // 특허: 공식 사이트 Patents 기준 + 0614_1943 실적 마스터의 [귀속확정] 누락분 보강 (국제 8 · 국내 44).
+  // 번호·날짜는 원천 표기 기준 — 게시 전 검수 권장.
   patents: {
     international: [
+      {
+        title: "Grid-forming Power Conversion Control Device and Method",
+        inventors: "K. Hur, J. Kang",
+        no: "US 18/843,589",
+        date: "03/09/2024",
+      },
+      {
+        title: "Power Control Method, Power Control Device, and Battery System",
+        inventors: "K. Hur, J. Kim",
+        no: "PCT/KR2025/016166",
+        date: "14/10/2025",
+      },
       {
         title: "Modular Multilevel Converter Sub-module Having DC Fault Current Blocking Function and Method of Controlling the Same",
         inventors: "K. Hur, H. Kim, S. Kim, J. Na, R. Kim",
@@ -916,6 +957,19 @@ window.labData = {
       },
     ],
     domestic: [
+      { title: "태양광 발전기 모델, 태양광 발전소 설계 시스템 및 방법", no: "10-2025-0062166", date: "13/05/2025" },
+      { title: "태양광 인버터의 중앙 제어장치", no: "10-2024-0113076 / 10-2763688", date: "03/03/2025" },
+      { title: "전력 제어 방법, 전력 제어 장치, 및 배터리 시스템", no: "10-2024-0200637", date: "14/10/2025" },
+      { title: "전류형 HVDC의 인버터 소호각 제어장치 및 제어방법", no: "10-2019-0132319 / 10-2727100", date: "01/11/2024" },
+      { title: "태양광 인버터의 합동/복합 제어장치", no: "10-2024-0112866 / 10-2722785", date: "23/10/2024" },
+      { title: "태양광 인버터의 제어장치", no: "10-2024-0112567 / 10-2722423", date: "22/10/2024" },
+      { title: "태양광 인버터의 혼합 제어장치 및 그 방법", no: "10-2020-0088038 / 10-2699222", date: "22/08/2024" },
+      { title: "ESS를 활용한 항만 전력 공급 시스템 및 방법", no: "10-2024-0096519", date: "22/07/2024" },
+      { title: "그리드 포밍 전력 변환 제어 장치 및 전력 변환 제어 방법", no: "10-2438870 / 10-2022-0026716", date: "29/08/2022" },
+      { title: "토크 계수 산정 방법", no: "10-2020-0155393 / 10-2416995", date: "30/06/2022" },
+      { title: "전력망의 모의 실험 방법", no: "10-2021-0113551", date: "27/08/2021" },
+      { title: "그리드 포밍 컨버터 출력 주파수 제어 방법 및 제어 장치", no: "10-2020-0164432", date: "30/11/2020" },
+      { title: "그리드포밍 전력변환장치의 최적 전압 추종제어 및 임피던스 제약 평가 장치·방법", no: "10-2020-0158245", date: "23/11/2020" },
       { title: "전자기 과도 상태 시뮬레이션 방법 및 기록 매체", no: "10-2021-0102188", date: "03/08/2021" },
       { title: "DC 고장 전류 차단 기능을 갖는 모듈러 멀티레벨 컨버터 서브 모듈 및 이의 제어 방법", no: "10-2184786", date: "24/11/2020" },
       { title: "모듈러 멀티레벨 컨버터의 동작 확인 시험 장치 및 방법", no: "10-1886804", date: "02/08/2018" },
@@ -957,6 +1011,18 @@ window.labData = {
     - image: 썸네일 사진 경로 (예: "assets/gallery/award.jpg", 없으면 "")
   */
   news: [
+    {
+      id: "ai-copilot-grid-operation",
+      date: "2026.06",
+      category: "Research",
+      title: "AI 기반 전력망 운영 보조 연구 방향",
+      description:
+        "재생에너지와 전력전자 기반 설비가 확대되는 전력망에서 안정도 평가, Grid Service 산정, 운영자 의사결정 보조를 연결하는 연구 방향입니다.",
+      body:
+        "재생에너지 중심 전력망에서는 전압·주파수·동요 안정도, 약계통 조건, 운영예비력과 같은 요소가 서로 연결되어 나타납니다. Smartgrid Laboratory는 모델링과 시뮬레이션, 측정 기반 검증, AI 기반 분석 자동화를 결합해 운영자가 이해하고 검토할 수 있는 의사결정 보조 도구를 연구합니다.\n\n주요 관심사는 사고 후 전압 과도응답, 주파수 nadir와 RoCoF, 안정도 여유, Dynamic Operating Reserve, Grid Service 요구량과 위치 선정입니다. AI는 최종 제어를 대신하는 장치가 아니라, 후보 시나리오를 빠르게 선별하고 물리 기반 검증과 설명을 붙여 운영 판단을 보조하는 도구로 다룹니다.\n\n이 게시글의 그림은 공개 설명용 synthetic concept visual이며 실제 계측 또는 시뮬레이션 결과를 대표하지 않습니다. 구체 과제명, 정량 목표, 참여기관 세부 역할은 내부 검수 후 공개 범위를 확정해 보완할 예정입니다.",
+      image: "assets/research/ai-copilot-voltage-response.png",
+      alt: "Synthetic voltage response concept visual for AI-assisted grid operation research",
+    },
     {
       id: "ai-sw-hvdc-center",
       date: "2026",
@@ -1001,12 +1067,24 @@ window.labData = {
 
   gallery: [
     {
+      id: "voltage-frequency-response-concept",
+      caption: "Voltage and Frequency Response Concept",
+      date: "2026.06",
+      category: "Research Visual",
+      description: "전력망 사고 후 전압 과도응답과 주파수 회복 특성을 설명하는 synthetic concept visual입니다.",
+      body:
+        "전압 저하, clearing overvoltage, damping oscillation, RoCoF, frequency nadir처럼 안정도 평가에서 자주 다루는 신호 특징을 설명하기 위한 공개용 개념 그림입니다. 실제 계측 또는 특정 시뮬레이션 케이스 결과로 해석하지 않습니다.",
+      image: "assets/research/ai-copilot-voltage-response.png",
+      relatedNewsTitle: "AI 기반 전력망 운영 보조 연구 방향",
+      alt: "Synthetic voltage response graph for grid stability concept",
+    },
+    {
       caption: "Lab Photo",
       date: "",
       category: "Gallery",
       description: "연구실 단체 사진 자리",
       body:
-        "연구실 구성원 사진과 행사 기록을 이곳에 추가하세요. 관리자 편집기에서 실제 사진, 날짜, 설명을 채우면 갤러리와 상세 공지창이 함께 업데이트됩니다.",
+        "연구실 구성원 사진과 행사 기록을 이곳에 추가하세요. 관리자 편집기에서 실제 사진, 날짜, 설명을 채우면 갤러리와 상세 게시글 페이지가 함께 업데이트됩니다.",
       image: "",
       relatedNewsTitle: "",
       alt: "연구실 단체 사진 자리",

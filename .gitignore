@@ -1,3 +1,10 @@
 *.zip
 editor.html
 assets/generated/
+.edge-preview-profile/
+.edge-dump-profile/
+__pycache__/
+# benchmark/crawl scaffolding and headless-render QA outputs — not site content, keep out of public deploys
+benchmarks/
+_qa_renders/
+_qa_renders_mobile/

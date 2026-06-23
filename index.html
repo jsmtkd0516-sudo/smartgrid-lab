@@ -22,7 +22,45 @@
     <script>
       document.documentElement.classList.add("js-ready");
     </script>
-    <link rel="stylesheet" href="styles.css?v=20260621-ops-upgrade" />
+    <link rel="stylesheet" href="styles.css?v=20260622-cards" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ResearchOrganization",
+        "name": "Yonsei University Smartgrid Laboratory",
+        "alternateName": "연세대학교 Smartgrid Laboratory",
+        "url": "https://jsmtkd0516-sudo.github.io/smartgrid-lab/",
+        "logo": "https://jsmtkd0516-sudo.github.io/smartgrid-lab/assets/hero-smart-grid.png",
+        "email": "khur@yonsei.ac.kr",
+        "parentOrganization": {
+          "@type": "CollegeOrUniversity",
+          "name": "Yonsei University",
+          "url": "https://www.yonsei.ac.kr/"
+        },
+        "department": {
+          "@type": "EducationalOrganization",
+          "name": "School of Electrical and Electronic Engineering"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "50 Yonsei-ro, Seodaemun-gu",
+          "addressLocality": "Seoul",
+          "postalCode": "03722",
+          "addressCountry": "KR"
+        },
+        "knowsAbout": [
+          "Power Systems",
+          "HVDC",
+          "FACTS",
+          "Grid-Forming Converter",
+          "EMT Analysis",
+          "Power System Stability",
+          "Smart Grid",
+          "Renewable Energy Integration"
+        ],
+        "sameAs": ["https://github.com/jsmtkd0516-sudo/smartgrid-lab"]
+      }
+    </script>
   </head>
   <body>
     <header class="site-header" data-header data-site-header></header>
@@ -41,7 +79,7 @@
           <p class="eyebrow">Yonsei EEE · Smartgrid Laboratory</p>
           <h1>Yonsei University Smartgrid Laboratory</h1>
           <p class="hero-copy">
-            재생에너지, HVDC/FACTS, 계통 안정도, EMT 해석, 그리드포밍 컨버터를 중심으로
+            재생에너지, HVDC/FACTS, 계통 안정도, EMT 해석, AI 기반 운영 보조를 중심으로
             미래 전력망의 안정성과 유연성을 연구합니다.
           </p>
           <div class="hero-actions" aria-label="Main links">
@@ -89,6 +127,23 @@
         </a>
       </nav>
 
+      <section class="impact-strip reveal" aria-label="Research impact at a glance">
+        <div class="impact-inner">
+          <a class="impact-stat" href="publications.html">
+            <strong data-stat="publications">0</strong>
+            <span>Publications</span>
+          </a>
+          <a class="impact-stat" href="projects.html">
+            <strong data-stat="projectsTotal">0</strong>
+            <span>Research Projects</span>
+          </a>
+          <a class="impact-stat" href="patents.html">
+            <strong data-stat="patents">0</strong>
+            <span>Patents</span>
+          </a>
+        </div>
+      </section>
+
       <section class="section audience-section" aria-labelledby="audience-title">
         <div class="section-heading compact reveal">
           <p class="eyebrow">Find Your Path</p>
@@ -120,7 +175,7 @@
             <h2>전력망 전환기의 안정도, 유연성, 운영 기술을 연구합니다.</h2>
             <p>
               Smartgrid Laboratory는 전력전자 기반 송전·계통연계, 측정 데이터 기반 계통 감시,
-              재생에너지·저장장치 통합 운영을 중심으로 미래 전력망의 핵심 문제를 다룹니다.
+              재생에너지·저장장치 통합 운영, AI 기반 운영 보조를 중심으로 미래 전력망의 핵심 문제를 다룹니다.
             </p>
             <div class="home-focus-list" aria-label="Research focus areas">
               <article>
@@ -138,6 +193,11 @@
                 <strong>Renewable / ESS / EMS</strong>
                 <p>재생에너지와 저장장치가 결합된 저탄소 전력망 운영</p>
               </article>
+              <article>
+                <span>04</span>
+                <strong>AI Operation / Grid Services</strong>
+                <p>안정도 평가, 동적 운영예비력, Grid Service 산정과 의사결정 보조</p>
+              </article>
             </div>
           </div>
 
@@ -145,8 +205,8 @@
             <article class="home-feature-card" data-featured-project></article>
             <div class="home-pipeline-card">
               <span>Research Pipeline</span>
-              <strong>Modeling → Analysis → Control → Validation</strong>
-              <p>수치 모델과 실계통 데이터를 연결해 운영 가능한 전력망 기술로 확장합니다.</p>
+              <strong>Modeling → Stability Assessment → Decision Support → Validation</strong>
+              <p>수치 모델과 실계통 데이터를 연결해 운영자가 검토할 수 있는 전력망 의사결정 도구로 확장합니다.</p>
             </div>
           </div>
         </div>
@@ -213,8 +273,8 @@
 
     <div data-site-footer></div>
 
-    <script src="data/lab-data.js?v=20260621-ops-upgrade"></script>
-    <script src="chrome.js?v=20260621-ops-upgrade"></script>
-    <script src="script.js?v=20260621-ops-upgrade"></script>
+    <script src="data/lab-data.js?v=20260622-cards"></script>
+    <script src="chrome.js?v=20260622-cards"></script>
+    <script src="script.js?v=20260622-cards"></script>
   </body>
 </html>

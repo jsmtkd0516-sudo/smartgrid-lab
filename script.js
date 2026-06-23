@@ -124,58 +124,190 @@ const renderProjects = () => {
   const target = document.querySelector("[data-project-list]");
   if (!target) return;
 
-  target.innerHTML = (labData.projects ?? [])
-    .map(
-      (item) => `
-        <article class="${item.empty ? "empty-card" : ""}">
-          <span>${escapeHtml(item.status)}</span>
-          <h3>${escapeHtml(item.title)}</h3>
-          <p>${escapeHtml(item.description)}</p>
-        </article>
-      `
-    )
-    .join("");
+  const all = (labData.projects ?? []).filter((item) => !item.empty);
+  const isActive = (item) => /active/i.test(item.status ?? "");
+  const active = all.filter(isActive);
+  const completed = all.filter((item) => !isActive(item));
+
+  const card = (item, statusKey) => `
+    <article data-status="${statusKey}">
+      <span class="project-status-tag ${statusKey}">${escapeHtml(item.status)}</span>
+      <h3>${escapeHtml(item.title)}</h3>
+      ${item.description ? `<p class="project-funder">${escapeHtml(item.description)}</p>` : ""}
+    </article>`;
+
+  const divider = (label, n) =>
+    `<div class="project-divider"><span>${escapeHtml(label)}</span><span class="project-divider-count">${n}</span></div>`;
+
+  const sections = [
+    `<div class="project-summary">
+       <span class="proj-stat"><strong>${all.length}</strong> 총 과제</span>
+       <span class="proj-stat"><strong>${active.length}</strong> 진행 중</span>
+       <span class="proj-stat"><strong>${completed.length}</strong> 완료</span>
+     </div>`,
+  ];
+  if (active.length) {
+    sections.push(divider("진행 중 과제", active.length));
+    sections.push(...active.map((item) => card(item, "active")));
+  }
+  if (completed.length) {
+    sections.push(divider("완료 과제", completed.length));
+    sections.push(...completed.map((item) => card(item, "completed")));
+  }
+  target.innerHTML = sections.join("");
+};
+
+// 제목/게재지 텍스트에서 연구 주제 태그를 추정한다 (필터·표시용 보조 분류, 사실 단정 아님).
+const PUB_TOPICS = [
+  { key: "hvdc", label: "HVDC/MMC", re: /\bhvdc\b|\bmmc\b|modular multilevel|multilevel converter|\bvsc\b|\blcc\b|dc grid|dc network|dc fault|dc transmission/i },
+  { key: "power-electronics", label: "Power Electronics", re: /converter|inverter|power electronic|\bfacts\b|statcom|grid-forming|grid forming|grid following|\bpwm\b/i },
+  { key: "emt", label: "EMT", re: /\bemt\b|electromagnetic transient/i },
+  { key: "renewable", label: "Renewable/ESS", re: /\bwind\b|solar|photovolt|\bpv\b|renewable|energy storage|\bess\b|battery|\bder\b|distributed generation|distributed energy/i },
+  { key: "stability", label: "Stability/Dynamics", re: /stability|inertia|damping|dynamic|frequency|oscillat|sub-?synchronous|\bsso\b|\bssr\b|small-?signal/i },
+  { key: "ai", label: "AI/Forecasting", re: /forecast|prediction|deep learning|machine learning|neural|reinforcement|data-driven|learning-based/i },
+  { key: "estimation", label: "Parameter Est.", re: /estimation|parameter|identification|calibrat/i },
+  { key: "load", label: "Load Modeling", re: /load model|composite load|load modell?ing/i },
+  { key: "protection", label: "Protection/Fault", re: /protection|\bfault\b|relay|breaker|short-?circuit/i },
+  { key: "market", label: "Market/Operation", re: /market|economic dispatch|unit commitment|\boperation\b|reserve|ancillary|scheduling|optimal power flow|\bopf\b/i },
+];
+
+const pubTopicTags = (text = "") => PUB_TOPICS.filter((topic) => topic.re.test(text));
+
+const pubType = (venue = "") => {
+  if (/대한전기학회|전기학회|한국|korean institute|\bkiee\b|transactions of the korean/i.test(venue))
+    return { key: "domestic", label: "Domestic" };
+  if (/conference|proceedings|symposium|\bmeeting\b|workshop|congress|\bpesgm\b|powertech|\becce\b|\bapec\b|\bipec\b/i.test(venue))
+    return { key: "conference", label: "Conference" };
+  return { key: "journal", label: "Journal" };
+};
+
+// links/doi 등이 데이터에 있을 때만 버튼을 그린다 (없는 링크를 지어내지 않는다).
+const PUB_LINK_DEFS = [
+  ["doi", "DOI"],
+  ["paper", "PDF"],
+  ["code", "Code"],
+  ["slides", "Slides"],
+  ["video", "Video"],
+];
+
+const pubLinkButtons = (item) => {
+  const links = item.links ?? {};
+  const parts = PUB_LINK_DEFS.filter(([key]) => item[key] || links[key]).map(([key, label]) => {
+    const href = item[key] || links[key];
+    return `<a class="pub-link-btn" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${label}</a>`;
+  });
+  return parts.length ? `<div class="pub-links">${parts.join("")}</div>` : "";
 };
 
 const renderPublications = () => {
   const target = document.querySelector("[data-publication-list]");
   if (!target) return;
 
-  // 연도별로 묶어 헤더는 한 번씩, 각 논문은 한 줄(제목 + 저자 + 게재지) 행으로.
-  const pubs = (labData.publications ?? []).filter((item) => !item.empty);
-  const order = [];
-  const byYear = new Map();
-  pubs.forEach((item) => {
-    const year = item.year || "";
-    if (!byYear.has(year)) {
-      byYear.set(year, []);
-      order.push(year);
-    }
-    byYear.get(year).push(item);
-  });
+  const yearNum = (value) => {
+    const n = parseInt(String(value).replace(/[^0-9]/g, ""), 10);
+    return Number.isFinite(n) ? n : -1;
+  };
 
-  target.innerHTML = order
+  const pubs = (labData.publications ?? [])
+    .filter((item) => !item.empty)
+    .map((item) => {
+      const type = pubType(item.venue || "");
+      const topics = pubTopicTags(`${item.title || ""} ${item.venue || ""}`);
+      const recent = Array.isArray(item.tags) && item.tags.includes("recent");
+      return {
+        ...item,
+        _type: type,
+        _topics: topics,
+        _recent: recent,
+        _tags: [type.key, ...(recent ? ["recent"] : []), ...topics.map((topic) => topic.key)],
+      };
+    })
+    .sort((a, b) => yearNum(b.year) - yearNum(a.year));
+
+  const typeCount = (key) => pubs.filter((item) => item._type.key === key).length;
+  const recentCount = pubs.filter((item) => item._recent).length;
+  const years = pubs.map((item) => yearNum(item.year)).filter((n) => n > 0);
+  const yearRange = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "";
+
+  // 요약 통계
+  const summary = document.querySelector("[data-pub-summary]");
+  if (summary) {
+    const stat = (n, label) => `<span class="pub-stat"><strong>${n}</strong>${escapeHtml(label)}</span>`;
+    summary.innerHTML = [
+      stat(pubs.length, " publications"),
+      typeCount("journal") ? stat(typeCount("journal"), " journal") : "",
+      typeCount("conference") ? stat(typeCount("conference"), " conference") : "",
+      typeCount("domestic") ? stat(typeCount("domestic"), " domestic") : "",
+      yearRange ? `<span class="pub-stat pub-stat-muted">${escapeHtml(yearRange)}</span>` : "",
+    ].join("");
+  }
+
+  // 필터 칩: All / Recent / 유형 / 주제(2건 이상)
+  const topicCounts = new Map();
+  pubs.forEach((item) => item._topics.forEach((topic) => topicCounts.set(topic.key, (topicCounts.get(topic.key) || 0) + 1)));
+  const topicChips = PUB_TOPICS.filter((topic) => (topicCounts.get(topic.key) || 0) >= 2);
+
+  const filterBar = document.querySelector("[data-pub-filter-bar]");
+  if (filterBar) {
+    const chip = (key, label, n) =>
+      `<button class="filter-button" type="button" data-pub-filter="${escapeHtml(key)}">${escapeHtml(label)}<span class="chip-count">${n}</span></button>`;
+    filterBar.innerHTML = [
+      chip("all", "All", pubs.length),
+      recentCount ? chip("recent", "Recent", recentCount) : "",
+      typeCount("journal") ? chip("journal", "Journal", typeCount("journal")) : "",
+      typeCount("conference") ? chip("conference", "Conference", typeCount("conference")) : "",
+      typeCount("domestic") ? chip("domestic", "Domestic", typeCount("domestic")) : "",
+      ...topicChips.map((topic) => chip(topic.key, topic.label, topicCounts.get(topic.key))),
+    ].join("");
+  }
+
+  // 카드 (연도 내림차순 평면 목록, 좌측에 연도+유형)
+  target.innerHTML = pubs
     .map(
-      (year) => `
-        <div class="pub-group">
-          <h3 class="pub-year">${escapeHtml(year)}</h3>
-          <ul class="pub-rows">
-            ${byYear
-              .get(year)
-              .map(
-                (item) => `
-                <li class="pub-row reveal">
-                  <p class="pub-title">${escapeHtml(item.title)}</p>
-                  ${item.authors ? `<p class="pub-authors">${escapeHtml(item.authors)}</p>` : ""}
-                  <p class="pub-venue">${escapeHtml(item.venue)}</p>
-                </li>`
-              )
-              .join("")}
-          </ul>
-        </div>
-      `
+      (item) => `
+        <article class="publication-item reveal" data-tags="${escapeHtml(item._tags.join(" "))}">
+          <div class="pub-side">
+            <time>${escapeHtml(item.year || "")}</time>
+            <span class="pub-type pub-type-${item._type.key}">${escapeHtml(item._type.label)}</span>
+          </div>
+          <div class="pub-main">
+            <h3 class="pub-title">${escapeHtml(item.title)}</h3>
+            ${item.authors ? `<p class="pub-authors">${escapeHtml(item.authors)}</p>` : ""}
+            <p class="pub-venue">${escapeHtml(item.venue || "")}</p>
+            ${item._topics.length ? `<div class="pub-tags">${item._topics.map((topic) => `<span>${escapeHtml(topic.label)}</span>`).join("")}</div>` : ""}
+            ${pubLinkButtons(item)}
+          </div>
+        </article>`
     )
     .join("");
+
+  // 필터 동작 (단일 선택, 토큰 단위 정확 매칭)
+  if (filterBar) {
+    const apply = (key) => {
+      target.querySelectorAll(".publication-item").forEach((card) => {
+        const tags = (card.dataset.tags || "").split(/\s+/);
+        card.classList.toggle("is-hidden", key !== "all" && !tags.includes(key));
+      });
+    };
+    const update = (key) => {
+      filterBar.querySelectorAll("[data-pub-filter]").forEach((button) =>
+        button.classList.toggle("is-active", button.dataset.pubFilter === key)
+      );
+      apply(key);
+    };
+    filterBar.onclick = (event) => {
+      const button = event.target instanceof Element ? event.target.closest("[data-pub-filter]") : null;
+      if (!button) return;
+      update(button.dataset.pubFilter || "all");
+    };
+    // 다른 페이지(예: research.html?topic=hvdc)에서 넘어오면 해당 필터로 시작한다.
+    const params = new URLSearchParams(location.search);
+    const requested = params.get("topic") || params.get("filter") || "all";
+    const valid = [...filterBar.querySelectorAll("[data-pub-filter]")].some(
+      (button) => button.dataset.pubFilter === requested
+    );
+    update(valid ? requested : "all");
+  }
 };
 
 const renderAchievements = () => {
@@ -227,10 +359,31 @@ const linkIcon = (type, href) => {
   return `<span class="${cls} is-empty" aria-hidden="true">${svg}</span>`;
 };
 
+// 사진이 없는 실제 멤버에게는 이름 기반 컬러 이니셜 아바타 (가짜 얼굴이 아니라 자리표시 아바타).
+const AVATAR_COLORS = ["#145fbb", "#0b4a97", "#3bb7e8", "#1fbf9a", "#2b6fb0", "#1b8f7a", "#5a7fb5", "#0f7a63"];
+const initialsOf = (name = "") => {
+  const n = String(name).trim();
+  if (!n) return "?";
+  const parts = n.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2 && /[A-Za-z]/.test(parts[0])) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return (/[A-Za-z]/.test(n) ? n.slice(0, 2) : n.slice(0, 1)).toUpperCase();
+};
+const avatarColor = (name = "") => {
+  let h = 0;
+  for (let i = 0; i < name.length; i += 1) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+};
+const initialAvatar = (name) => `
+  <span class="person-photo person-avatar" role="img" aria-label="${escapeHtml(name)}" style="background:${avatarColor(name)}">
+    <span class="person-avatar-initials">${escapeHtml(initialsOf(name))}</span>
+  </span>`;
+
 const memberCard = (person) => {
   const photo = person.photo
     ? `<img class="person-photo" src="${escapeHtml(person.photo)}" alt="${escapeHtml(person.name)} profile photo" />`
-    : photoSlot(person.name, person.empty);
+    : person.empty
+      ? photoSlot(person.name, true)
+      : initialAvatar(person.name);
 
   // 값이 있는 링크만 활성 아이콘으로 표시 (이메일은 mailto로).
   const links = person.links ?? {};
@@ -354,6 +507,7 @@ const galleryPost = (item, index = 0) => {
     source: "Gallery",
     date: item.date || related?.date || "",
     category: item.category || related?.category || "Gallery",
+    type: "Gallery",
     title: item.title || item.caption || related?.title || "Gallery",
     description: item.description || related?.description || item.alt || "",
     body: item.body || related?.body || "",
@@ -379,12 +533,43 @@ const ensureUniquePostIds = (posts) => {
   });
 };
 
+// ?demo=1 미리보기 전용 샘플 게시글 — 기본/배포에는 절대 포함되지 않으며 모두 "[예시]" 라벨이 붙는다.
+// 배포 전 실제 소식으로 교체하거나 그대로 두면(플래그 없으면) 사이트에 안 나온다.
+const DEMO_MODE = new URLSearchParams(location.search).get("demo") === "1";
+const DEMO_POSTS = [
+  {
+    date: "2026.06", category: "예시 데이터", type: "Award",
+    title: "[예시] 연구실, IEEE PES General Meeting 2026 논문 발표",
+    description: "데모용 샘플 게시글입니다. 실제 소식이 아니며 ?demo=1 미리보기에서만 보입니다.",
+    body: "이 글은 뉴스 페이지가 실제 콘텐츠로 채워졌을 때의 레이아웃을 보여주기 위한 예시입니다.\n\n배포 전에 실제 소식으로 교체하거나 삭제하세요. 플래그(?demo=1) 없이 접속하면 이 글은 표시되지 않습니다.",
+  },
+  {
+    date: "2026.05", category: "예시 데이터", type: "Paper",
+    title: "[예시] 그리드포밍 컨버터 안정도 연구 국제 학술지 게재",
+    description: "데모용 샘플 게시글입니다. 실제 소식이 아닙니다.",
+    body: "예시 본문입니다. 실제 논문/수상/행사 소식으로 교체하세요.",
+  },
+  {
+    date: "2026.04", category: "예시 데이터", type: "Welcome",
+    title: "[예시] 신규 석박사통합과정 연구원 합류",
+    description: "데모용 샘플 게시글입니다. 실제 소식이 아닙니다.",
+    body: "예시 본문입니다. 실제 소식으로 교체하세요.",
+  },
+  {
+    date: "2026.03", category: "예시 데이터", type: "Research",
+    title: "[예시] 한전 전력연구원 공동연구 과제 착수",
+    description: "데모용 샘플 게시글입니다. 실제 소식이 아닙니다.",
+    body: "예시 본문입니다. 실제 소식으로 교체하세요.",
+  },
+];
+
 const buildPostFeed = () => {
   const posts = (labData.news ?? [])
     .filter((item) => !item.empty)
     .map((item, index) => ({
       id: item.id || item.slug || makePostId(item.title, `news-${index + 1}`),
       source: "News",
+      type: item.type || item.category || "News",
       date: item.date || "",
       category: item.category || "News",
       title: item.title || "Untitled",
@@ -410,7 +595,26 @@ const buildPostFeed = () => {
       posts.push(galleryPost(item, index));
     });
 
-  return ensureUniquePostIds(posts);
+  const feed = DEMO_MODE
+    ? [
+        ...DEMO_POSTS.map((post, index) => ({
+          id: `demo-${index + 1}`,
+          source: "Demo",
+          type: post.type || "News",
+          date: post.date || "",
+          category: post.category || "예시 데이터",
+          title: post.title,
+          description: post.description || "",
+          body: post.body || "",
+          image: "",
+          alt: post.title,
+          demo: true,
+        })),
+        ...posts,
+      ]
+    : posts;
+
+  return ensureUniquePostIds(feed);
 };
 
 const postMedia = (post, className = "post-thumb") =>
@@ -421,6 +625,61 @@ const postMedia = (post, className = "post-thumb") =>
       </span>`;
 
 const postCategoryKey = (post) => slugify(post.category || post.source || "Post") || "post";
+
+const postTypeLabel = (post) => {
+  const type = post.type || post.category || post.source || "Post";
+  if (/recruit/i.test(type)) return "Recruiting";
+  if (/gallery|visual|photo/i.test(type)) return "Gallery";
+  if (/paper|publication/i.test(type)) return "Publication";
+  if (/award|press|media/i.test(type)) return "Achievement";
+  if (/research|center|project/i.test(type)) return "Research";
+  return type;
+};
+
+const postContextLinks = (post) => {
+  const text = `${post.category || ""} ${post.type || ""} ${post.title || ""}`.toLowerCase();
+  const links = [];
+  if (/recruit|모집/.test(text)) links.push(["Recruiting", "recruiting.html"]);
+  if (/research|grid|hvdc|converter|ai|center|project|연구/.test(text)) links.push(["Research", "research.html"]);
+  if (/project|center|hvdc|과제/.test(text)) links.push(["Projects", "projects.html"]);
+  if (/paper|publication|논문/.test(text)) links.push(["Publications", "publications.html"]);
+  links.push(["Contact", "contact.html"]);
+
+  const seen = new Set();
+  return links.filter(([, href]) => {
+    if (seen.has(href)) return false;
+    seen.add(href);
+    return true;
+  });
+};
+
+const relatedPostsFor = (post, posts) => {
+  const category = postCategoryKey(post);
+  const words = new Set(
+    `${post.title || ""} ${post.category || ""} ${post.description || ""}`
+      .toLowerCase()
+      .split(/[^a-z0-9가-힣]+/)
+      .filter((word) => word.length > 2)
+  );
+
+  return posts
+    .filter((item) => item.id !== post.id)
+    .map((item) => {
+      let score = postCategoryKey(item) === category ? 5 : 0;
+      `${item.title || ""} ${item.category || ""} ${item.description || ""}`
+        .toLowerCase()
+        .split(/[^a-z0-9가-힣]+/)
+        .filter((word) => word.length > 2)
+        .forEach((word) => {
+          if (words.has(word)) score += 1;
+        });
+      return { item, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(({ item }) => item);
+};
 
 const postCategories = (posts) => {
   const seen = new Map();
@@ -484,127 +743,149 @@ const getRoutePostId = () => {
   return params.get("post") || params.get("id") || decodeURIComponent(location.hash.replace(/^#/, ""));
 };
 
-const setPostRoute = (post, replace = false) => {
-  const url = new URL(location.href);
-  url.searchParams.set("post", post.id);
-  url.searchParams.delete("id");
-  url.hash = "";
-  const method = replace ? "replaceState" : "pushState";
-  history[method]?.({ postId: post.id }, "", url);
-};
-
-const clearPostRoute = () => {
-  const url = new URL(location.href);
-  if (!url.searchParams.has("post") && !url.searchParams.has("id") && !url.hash) return;
-  url.searchParams.delete("post");
-  url.searchParams.delete("id");
-  url.hash = "";
-  history.pushState?.({}, "", url);
-};
-
 let activePostFeed = [];
-let postRouteBound = false;
 
-const closePostModal = (options = {}) => {
-  const modal = document.querySelector("[data-post-modal]");
-  if (!modal) return;
-  modal.hidden = true;
-  document.body.classList.remove("modal-open");
-  if (options.updateUrl !== false) clearPostRoute();
+const renderPostDetail = (target, post) => {
+  const posts = buildPostFeed();
+  const relatedPosts = relatedPostsFor(post, posts);
+  const contextLinks = postContextLinks(post);
+  const body = post.body || post.description || "상세 본문이 아직 입력되지 않았습니다. 관리자 편집기에서 본문을 추가하면 이 영역이 게시글 본문으로 표시됩니다.";
+
+  target.innerHTML = `
+    <a class="post-detail-back" href="news.html">&larr; 모든 게시글</a>
+    <div class="post-detail-shell">
+      <header class="post-detail-header">
+        <div class="post-detail-kicker">
+          <span>${escapeHtml(post.source || "Post")}</span>
+          <span>${escapeHtml(postTypeLabel(post))}</span>
+        </div>
+        <p class="news-meta">
+          ${post.date ? `<time>${escapeHtml(post.date)}</time>` : ""}
+          <span class="news-category">${escapeHtml(post.category)}</span>
+        </p>
+        <h1>${escapeHtml(post.title)}</h1>
+        ${post.description ? `<p class="post-detail-summary">${escapeHtml(post.description)}</p>` : ""}
+      </header>
+      <figure class="post-detail-media">
+        ${
+          post.image
+            ? `<img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.alt || post.title)}" />`
+            : `<div class="gallery-placeholder"><span>${escapeHtml(post.category || "Post")}</span></div>`
+        }
+      </figure>
+      <div class="post-detail-layout">
+        ${renderParagraphs(body, "post-detail-body")}
+        <aside class="post-detail-sidebar" aria-label="게시글 정보">
+          <div class="post-info-card">
+            <span>Post type</span>
+            <strong>${escapeHtml(postTypeLabel(post))}</strong>
+          </div>
+          <div class="post-info-card">
+            <span>Permalink</span>
+            <a href="${escapeHtml(postPermalink(post))}">${escapeHtml(post.id)}</a>
+          </div>
+          <div class="post-info-card">
+            <span>Related pages</span>
+            <div class="post-context-links">
+              ${contextLinks.map(([label, href]) => `<a href="${escapeHtml(href)}">${escapeHtml(label)}</a>`).join("")}
+            </div>
+          </div>
+        </aside>
+      </div>
+      ${
+        relatedPosts.length
+          ? `<section class="post-related" aria-label="관련 게시글">
+              <div class="post-related-head">
+                <span>More from the lab</span>
+                <h2>관련 게시글</h2>
+              </div>
+              <div class="post-related-grid">
+                ${relatedPosts
+                  .map(
+                    (item) => `
+                      <a class="post-related-card" href="${escapeHtml(postPermalink(item))}">
+                        <span>${escapeHtml(item.category || postTypeLabel(item))}</span>
+                        <strong>${escapeHtml(item.title)}</strong>
+                        <small>${escapeHtml(item.description || "")}</small>
+                      </a>
+                    `
+                  )
+                  .join("")}
+              </div>
+            </section>`
+          : ""
+      }
+      <footer class="post-detail-actions">
+        <a class="post-detail-link" href="news.html">목록으로</a>
+        <button class="post-detail-copy" type="button" data-post-detail-copy="${escapeHtml(
+          absolutePostPermalink(post)
+        )}">링크 복사</button>
+      </footer>
+    </div>
+  `;
+
+  const copyButton = target.querySelector("[data-post-detail-copy]");
+  copyButton?.addEventListener("click", () => {
+    const url = copyButton.dataset.postDetailCopy || location.href;
+    navigator.clipboard
+      ?.writeText(url)
+      .then(() => {
+        copyButton.textContent = "복사됨";
+        window.setTimeout(() => {
+          copyButton.textContent = "링크 복사";
+        }, 1200);
+      })
+      .catch(() => {
+        copyButton.textContent = "복사 실패";
+      });
+  });
+
+  updatePostMeta(post);
+};
+
+const renderMissingPost = (target, id) => {
+  target.innerHTML = `
+    <a class="post-detail-back" href="news.html">&larr; 모든 게시글</a>
+    <div class="post-detail-shell post-detail-missing">
+      <p class="eyebrow">Post not found</p>
+      <h1>게시글을 찾을 수 없습니다.</h1>
+      <p>요청한 게시글 ID ${escapeHtml(id || "")}에 해당하는 게시글이 없습니다.</p>
+      <a class="post-detail-link" href="news.html">목록으로 돌아가기</a>
+    </div>
+  `;
   updateDefaultMeta();
 };
 
-const openPostModal = (post, options = {}) => {
-  const modal = document.querySelector("[data-post-modal]");
-  if (!modal) return;
+const renderPostPage = (posts) => {
+  const detail = document.querySelector("[data-post-detail]");
+  if (!detail) return false;
 
-  modal.querySelector("[data-post-modal-media]").innerHTML = post.image
-    ? `<img src="${escapeHtml(post.image)}" alt="${escapeHtml(post.alt)}" />`
-    : `<div class="gallery-placeholder"><span>${escapeHtml(post.category || "Post")}</span></div>`;
-  modal.querySelector("[data-post-modal-meta]").innerHTML = `
-    ${post.date ? `<time>${escapeHtml(post.date)}</time>` : ""}
-    <span class="news-category">${escapeHtml(post.category)}</span>
-  `;
-  modal.querySelector("[data-post-modal-title]").textContent = post.title;
-  modal.querySelector("[data-post-modal-description]").textContent = post.description;
-  modal.querySelector("[data-post-modal-body]").innerHTML = renderParagraphs(post.body || post.description, "news-post-body");
-  const link = modal.querySelector("[data-post-modal-link]");
-  if (link) link.href = postPermalink(post);
-  const copyButton = modal.querySelector("[data-post-modal-copy]");
-  if (copyButton) {
-    copyButton.dataset.postUrl = absolutePostPermalink(post);
-    copyButton.textContent = "링크 복사";
+  const routeId = getRoutePostId();
+  const indexHeading = document.querySelector("[data-post-index-heading]");
+  const list = document.querySelector("[data-post-list], [data-news-list]");
+  const filters = document.querySelector("[data-post-filters]");
+
+  if (!routeId) {
+    detail.hidden = true;
+    if (indexHeading) indexHeading.hidden = false;
+    if (list) list.hidden = false;
+    if (filters) filters.hidden = false;
+    updateDefaultMeta();
+    return false;
   }
 
-  modal.hidden = false;
-  document.body.classList.add("modal-open");
-  updatePostMeta(post);
-  if (options.updateUrl !== false) setPostRoute(post, options.replaceUrl);
-  modal.querySelector("[data-post-modal-close]")?.focus();
-};
+  if (indexHeading) indexHeading.hidden = true;
+  if (list) list.hidden = true;
+  if (filters) filters.hidden = true;
+  detail.hidden = false;
 
-const handlePostRoute = () => {
-  const id = getRoutePostId();
-  if (!id) {
-    closePostModal({ updateUrl: false });
-    return;
-  }
-  const post = activePostFeed.find((item) => item.id === id);
-  if (post) openPostModal(post, { updateUrl: false });
-};
-
-const ensurePostModal = () => {
-  let modal = document.querySelector("[data-post-modal]");
-  if (modal) return modal;
-
-  modal = document.createElement("div");
-  modal.className = "gallery-modal post-modal";
-  modal.hidden = true;
-  modal.dataset.postModal = "";
-  modal.innerHTML = `
-    <div class="gallery-modal-backdrop" data-post-modal-close></div>
-    <article class="gallery-modal-card" role="dialog" aria-modal="true" aria-labelledby="gallery-modal-title">
-      <button class="gallery-modal-close" type="button" aria-label="닫기" data-post-modal-close>&times;</button>
-      <div class="gallery-modal-media" data-post-modal-media></div>
-      <div class="gallery-modal-body">
-        <p class="news-meta" data-post-modal-meta></p>
-        <h2 id="gallery-modal-title" data-post-modal-title></h2>
-        <p data-post-modal-description></p>
-        <div data-post-modal-body></div>
-        <div class="post-modal-actions">
-          <a class="post-modal-link" href="news.html" data-post-modal-link>게시글 링크 열기</a>
-          <button class="post-modal-copy" type="button" data-post-modal-copy>링크 복사</button>
-        </div>
-      </div>
-    </article>
-  `;
-  modal.addEventListener("click", (event) => {
-    if (event.target instanceof Element && event.target.closest("[data-post-modal-close]")) closePostModal();
-    const copyButton = event.target instanceof Element ? event.target.closest("[data-post-modal-copy]") : null;
-    if (copyButton) {
-      const url = copyButton.dataset.postUrl || location.href;
-      navigator.clipboard
-        ?.writeText(url)
-        .then(() => {
-          copyButton.textContent = "복사됨";
-          window.setTimeout(() => {
-            copyButton.textContent = "링크 복사";
-          }, 1200);
-        })
-        .catch(() => {
-          copyButton.textContent = "복사 실패";
-        });
-    }
-  });
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !modal.hidden) closePostModal();
-  });
-  document.body.append(modal);
-  return modal;
+  const post = posts.find((item) => item.id === routeId);
+  if (post) renderPostDetail(detail, post);
+  else renderMissingPost(detail, routeId);
+  return true;
 };
 
 const renderPostBoard = (target) => {
-  ensurePostModal();
   const posts = buildPostFeed();
   activePostFeed = posts;
 
@@ -615,12 +896,17 @@ const renderPostBoard = (target) => {
           <a class="post-card" href="${escapeHtml(postPermalink(post))}" data-post-id="${escapeHtml(post.id)}" data-post-index="${index}">
             <span class="post-thumb-frame">${postMedia(post)}</span>
             <span class="post-card-body">
+              <span class="post-card-kicker">
+                <span>${escapeHtml(post.source || "Post")}</span>
+                <span>${escapeHtml(postTypeLabel(post))}</span>
+              </span>
               <span class="news-meta">
                 ${post.date ? `<time>${escapeHtml(post.date)}</time>` : ""}
                 <span class="news-category">${escapeHtml(post.category)}</span>
               </span>
               <span class="post-card-title">${escapeHtml(post.title)}</span>
               <span class="post-card-summary">${escapeHtml(post.description)}</span>
+              <span class="post-card-cta">게시글 보기</span>
             </span>
           </a>
         </article>
@@ -629,23 +915,12 @@ const renderPostBoard = (target) => {
     .join("");
 
   renderPostFilters(target, posts);
-
-  target.querySelectorAll("[data-post-id]").forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      const post = posts.find((item) => item.id === link.dataset.postId);
-      if (post) openPostModal(post);
-    });
-  });
-
-  if (!postRouteBound) {
-    window.addEventListener("popstate", handlePostRoute);
-    postRouteBound = true;
-  }
-  handlePostRoute();
 };
 
 const renderNews = () => {
+  const posts = buildPostFeed();
+  activePostFeed = posts;
+  if (renderPostPage(posts)) return;
   document.querySelectorAll("[data-post-list], [data-news-list]").forEach(renderPostBoard);
 };
 
@@ -658,12 +933,21 @@ const renderPatents = () => {
   if (!target) return;
 
   const data = labData.patents ?? {};
+  const intl = (data.international ?? []).length;
+  const domestic = (data.domestic ?? []).length;
   const groups = [
     { title: "International Patents", list: data.international ?? [] },
     { title: "Domestic Patents (국내)", list: data.domestic ?? [] },
   ];
 
-  target.innerHTML = groups
+  const summary = `
+    <div class="patent-summary">
+      <span class="proj-stat"><strong>${intl + domestic}</strong> 특허</span>
+      ${intl ? `<span class="proj-stat"><strong>${intl}</strong> 국제</span>` : ""}
+      ${domestic ? `<span class="proj-stat"><strong>${domestic}</strong> 국내</span>` : ""}
+    </div>`;
+
+  target.innerHTML = summary + groups
     .filter((group) => group.list.length)
     .map(
       (group) => `
@@ -714,10 +998,62 @@ const renderHomeNews = () => {
     .join("");
 };
 
+// research.html의 각 연구 주제 컬럼을 실제 논문 수와 연결한다 (cross-link).
+const renderResearchTopics = () => {
+  const cols = document.querySelectorAll("[data-topic-key]");
+  if (!cols.length) return;
+
+  const pubs = (labData.publications ?? []).filter((item) => !item.empty);
+  const countForTopic = (key) => {
+    const topic = PUB_TOPICS.find((t) => t.key === key);
+    if (!topic) return 0;
+    return pubs.filter((item) => topic.re.test(`${item.title || ""} ${item.venue || ""}`)).length;
+  };
+
+  cols.forEach((col) => {
+    const slot = col.querySelector("[data-topic-links]");
+    if (!slot) return;
+    const key = col.dataset.topicKey;
+    const n = countForTopic(key);
+    slot.innerHTML = [
+      n
+        ? `<a class="topic-link" href="publications.html?topic=${encodeURIComponent(key)}">관련 논문 <strong>${n}</strong>편 &rarr;</a>`
+        : "",
+      `<a class="topic-link topic-link-ghost" href="projects.html">관련 과제 &rarr;</a>`,
+    ].join("");
+  });
+};
+
+// data-copy-text 속성을 가진 버튼: 클릭 시 그 텍스트를 클립보드에 복사한다.
+const setupCopyButtons = () => {
+  document.querySelectorAll("[data-copy-text], [data-copy-target]").forEach((button) => {
+    button.addEventListener("click", () => {
+      let text = button.dataset.copyText || "";
+      if (button.dataset.copyTarget) {
+        const el = document.querySelector(button.dataset.copyTarget);
+        text = el ? (el.value ?? el.textContent ?? "") : "";
+      }
+      const label = button.textContent;
+      navigator.clipboard
+        ?.writeText(text)
+        .then(() => {
+          button.textContent = "복사됨";
+          window.setTimeout(() => {
+            button.textContent = label;
+          }, 1200);
+        })
+        .catch(() => {
+          button.textContent = "복사 실패";
+        });
+    });
+  });
+};
+
 const renderContent = () => {
   renderFeaturedProject();
   renderProjects();
   renderPublications();
+  renderResearchTopics();
   renderAchievements();
   renderMembers();
   renderAlumni();
@@ -725,23 +1061,6 @@ const renderContent = () => {
   renderNews();
   renderHomeNews();
   renderGallery();
-};
-
-const setupPublicationFilters = () => {
-  const filterButtons = document.querySelectorAll("[data-filter]");
-  const publications = document.querySelectorAll("[data-publication-list] .publication-item");
-
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const filter = button.dataset.filter ?? "all";
-      filterButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-
-      publications.forEach((publication) => {
-        const tags = publication.dataset.tags ?? "";
-        publication.classList.toggle("is-hidden", filter !== "all" && !tags.includes(filter));
-      });
-    });
-  });
 };
 
 const setupReveal = () => {
@@ -778,16 +1097,19 @@ const setupReveal = () => {
 
 const setupHeroStats = () => {
   const members = (labData.members ?? []).filter((item) => !item.empty).length;
+  const projectList = (labData.projects ?? []).filter((item) => !item.empty);
   const projects =
-    (labData.projects ?? []).filter((item) => !item.empty && /active/i.test(item.status ?? "")).length +
-    (labData.featuredProject ? 1 : 0);
-  const targets = { members, projects };
+    projectList.filter((item) => /active/i.test(item.status ?? "")).length + (labData.featuredProject ? 1 : 0);
+  const projectsTotal = projectList.length;
+  const publications = (labData.publications ?? []).filter((item) => !item.empty).length;
+  const patentsData = labData.patents ?? {};
+  const patents = (patentsData.international ?? []).length + (patentsData.domestic ?? []).length;
+  const targets = { members, projects, projectsTotal, publications, patents };
 
   document.querySelectorAll("[data-stat]").forEach((el) => {
     const key = el.dataset.stat;
     if (!(key in targets)) return;
-    const to = targets[key];
-    el.textContent = String(to);
+    el.textContent = String(targets[key]);
   });
 };
 
@@ -997,7 +1319,7 @@ const setupHeroCanvas = () => {
 };
 
 renderContent();
-setupPublicationFilters();
 setupReveal();
 setupHeroStats();
 setupHeroCanvas();
+setupCopyButtons();

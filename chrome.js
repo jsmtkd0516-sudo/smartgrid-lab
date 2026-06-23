@@ -118,7 +118,7 @@
         <span>Engineering Research Park 246C · Engineering Building C626</span>
         <span>50 Yonsei-ro, Seodaemun-gu, Seoul 03722, Korea</span>
       </div>
-      <p class="footer-note">Concept website draft. Content should be reviewed before publication.</p>
+      <p class="footer-note" data-admin-unlock>Concept website draft. Content should be reviewed before publication.</p>
     </footer>
   `;
 
@@ -126,6 +126,34 @@
   if (headerSlot) headerSlot.innerHTML = headerHtml;
   const footerSlot = document.querySelector("[data-site-footer]");
   if (footerSlot) footerSlot.innerHTML = footerHtml;
+
+  const openAdminEditor = () => {
+    window.location.href = new URL("editor.html", window.location.href).href;
+  };
+
+  const adminUnlockTarget = document.querySelector("[data-admin-unlock]");
+  let adminTapCount = 0;
+  let adminTapTimer = 0;
+
+  adminUnlockTarget?.addEventListener("click", () => {
+    window.clearTimeout(adminTapTimer);
+    adminTapCount += 1;
+    if (adminTapCount >= 5) {
+      adminTapCount = 0;
+      openAdminEditor();
+      return;
+    }
+    adminTapTimer = window.setTimeout(() => {
+      adminTapCount = 0;
+    }, 1600);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && event.altKey && event.key.toLowerCase() === "e") {
+      event.preventDefault();
+      openAdminEditor();
+    }
+  });
 
   // favicon + 모바일 테마색 주입 (모든 페이지 공통)
   if (!document.querySelector('link[rel="icon"]')) {
