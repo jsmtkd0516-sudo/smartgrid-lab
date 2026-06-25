@@ -193,7 +193,9 @@ const PUB_LINK_DEFS = [
 const pubLinkButtons = (item) => {
   const links = item.links ?? {};
   const parts = PUB_LINK_DEFS.filter(([key]) => item[key] || links[key]).map(([key, label]) => {
-    const href = item[key] || links[key];
+    const raw = item[key] || links[key];
+    // doi 값이 베어 DOI(10.x/...)면 doi.org 링크로 풀어준다.
+    const href = key === "doi" && !/^https?:/i.test(raw) ? `https://doi.org/${raw}` : raw;
     return `<a class="pub-link-btn" href="${escapeHtml(href)}" target="_blank" rel="noreferrer">${label}</a>`;
   });
   return parts.length ? `<div class="pub-links">${parts.join("")}</div>` : "";

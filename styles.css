@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+
 :root {
   --ink: #102033;
   --muted: #5a6b7f;
@@ -9,9 +11,9 @@
   --cyan: #3bb7e8;
   --mint: #1fbf9a;
   --amber: #f6b34a;
-  --line: rgba(21, 49, 86, 0.13);
-  --shadow: 0 22px 60px rgba(11, 37, 68, 0.14);
-  --radius: 8px;
+  --line: rgba(21, 49, 86, 0.10);
+  --shadow: 0 1px 2px rgba(11, 37, 68, 0.05), 0 16px 44px rgba(11, 37, 68, 0.12);
+  --radius: 10px;
   --header-height: 72px;
 }
 
@@ -3879,5 +3881,103 @@ button:focus-visible,
   font-size: clamp(1.3rem, 5vw, 2rem);
   letter-spacing: 0.02em;
   line-height: 1;
+}
+
+/* ============================================================
+   2026-06-22 · Visual polish pass — typography, cards, hero, buttons
+   Appended layer: refines the look without touching earlier rules.
+   ============================================================ */
+
+/* Confident, tighter headings */
+h1,
+h2,
+h3,
+.pub-title {
+  letter-spacing: -0.018em;
+}
+
+.hero-content h1 {
+  letter-spacing: -0.032em;
+  line-height: 1.05;
+}
+
+/* Softer, larger card radius across the board */
+.research-card,
+.person-card,
+.achievement-card,
+.project-list article,
+.publication-item,
+.home-research-card,
+.topic-sub,
+.collab-chip,
+.recruiting-card,
+.home-feature-card,
+.home-news-item,
+.audience-card {
+  border-radius: 14px;
+}
+
+/* Refined hover lift */
+.research-card:hover,
+.person-card:hover,
+.achievement-card:hover,
+.project-list article:hover,
+.publication-item:hover,
+.home-research-card:hover,
+.topic-sub:hover,
+.collab-chip:hover {
+  transform: translateY(-5px);
+  border-color: rgba(59, 183, 232, 0.45);
+  box-shadow:
+    0 2px 4px rgba(11, 37, 68, 0.04),
+    0 18px 42px rgba(11, 37, 68, 0.13);
+}
+
+/* Buttons: refined radius + colored lift on primary */
+.btn {
+  border-radius: 10px;
+  letter-spacing: 0.005em;
+}
+
+.btn-primary {
+  box-shadow: 0 10px 24px rgba(20, 95, 187, 0.26);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(20, 95, 187, 0.32);
+}
+
+/* Filter chips: livelier hover */
+.filter-button {
+  transition:
+    border-color 160ms ease,
+    color 160ms ease,
+    background 160ms ease;
+}
+
+.filter-button:hover:not(.is-active) {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+/* Impact strip: premium home centerpiece */
+.impact-inner {
+  box-shadow:
+    0 2px 4px rgba(11, 37, 68, 0.04),
+    0 22px 52px rgba(11, 37, 68, 0.1);
+}
+
+.impact-stat strong {
+  letter-spacing: -0.025em;
+}
+
+/* Section eyebrows: airier tracking */
+.section-heading .eyebrow,
+.home-intro-copy .eyebrow {
+  letter-spacing: 0.16em;
 }
 

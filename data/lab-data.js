@@ -262,66 +262,87 @@ window.labData = {
     {
       year: "2026",
       title: "Deterministic and Probabilistic Forecasting of Wind Power Generation and Ramp Rate With Expectation-Implemented Deep Learning",
+      doi: "10.1109/TSTE.2025.3585404",
+      authors: "M. Ko, H. Zhu, K. Hur",
       venue: "IEEE Transactions on Sustainable Energy (2026)",
       tags: ["recent"],
     },
     {
       year: "2026",
       title: "Synthetic Inertia Control for a Wind Turbine Generator Based on Event Size and Rotor Speed",
+      doi: "10.1109/TSTE.2025.3581977",
+      authors: "J. Kang, Y. C. Kang, K. Kim, K. Kang, Y. Lee, K. Hur, D. Cho",
       venue: "IEEE Transactions on Sustainable Energy (2026)",
       tags: ["recent"],
     },
     {
       year: "2025",
       title: "A Study on the Possibility and Countermeasures of Sub-Synchronous Oscillation in Korea Power Grid",
+      doi: "10.5370/KIEE.2025.74.11.1810",
+      authors: "J. Shin, Y. Cho, K. Hur, J. Maeng, S. Park",
       venue: "Transactions of the Korean Institute of Electrical Engineers (2025)",
       tags: ["recent"],
     },
     {
       year: "2024",
       title: "Metaverse-driven smart grid architecture",
+      doi: "10.1016/j.egyr.2024.08.027",
+      authors: "L. Tightiz, L. M. Dang, S. Padmanaban, K. Hur",
       venue: "Energy Reports (2024)",
       tags: ["recent"],
     },
     {
       year: "2024",
       title: "South Korean Power System Operation and Renewable Integration: Using Artificial Intelligence Applications",
+      doi: "10.1109/MPE.2024.3411580",
+      authors: "J. Lee, Y. Jung, J. Lee, J. Shin, S. Cha, S. Song, S. Min, J. Moon, K. Hur, J. Choi, G. Jang",
       venue: "IEEE Power and Energy Magazine (2024)",
       tags: ["recent"],
     },
     {
       year: "2024",
       title: "Locating the Source of Oscillation With Two-Tier Dynamic Mode Decomposition Integrating Early-Stage Energy",
+      doi: "10.1109/TPWRS.2023.3336333",
+      authors: "M. Ko, W. Shin, K. Sun, K. Hur",
       venue: "IEEE Transactions on Power Systems (2024)",
       tags: ["recent"],
     },
     {
       year: "2024",
       title: "On the perturbation size of the finite difference method for trajectory sensitivity-based assessment of power system dynamics with non-smooth behavior",
+      doi: "10.1016/j.ijepes.2023.109647",
+      authors: "J. Kim, K. Hur",
       venue: "International Journal of Electrical Power & Energy Systems (2024)",
       tags: ["recent"],
     },
     {
       year: "2023",
       title: "A Practical Framework for Investigating the SSTI between HVDC and Nearby Generators",
+      doi: "10.1007/s42835-023-01430-1",
+      authors: "W. Shin, H.-K. Ku, J. Song, K. Hur",
       venue: "Journal of Electrical Engineering & Technology (2023)",
       tags: ["2023"],
     },
     {
       year: "2022",
       title: "Reserve replacement from governor to energy storage system on conventional generator for operating-cost reduction",
+      doi: "10.1016/j.apenergy.2022.119697",
+      authors: "W. Shin, C. Lee, I.-Y. Chung, J. Lim, J. Youn, Y. Rhie, K. Hur, J. W. Shim",
       venue: "Applied Energy (2022)",
       tags: ["2022"],
     },
     {
       year: "2022",
       title: "Operation Method of Energy Storage System Replacing Governor for Frequency Regulation of Synchronous Generator without Reserve",
+      doi: "10.3390/en15030798",
+      authors: "N.-D. Nguyen-Hoang, W. Shin, C. Lee, I.-Y. Chung, D. Kim, Y.-H. Hwang, J. Youn, J. Maeng, M. Yoon, K. Hur, J. W. Shim",
       venue: "Energies (2022)",
       tags: ["2022"],
     },
     {
       year: "2024",
       title: "Active Distribution Network Expansion Planning With Dynamic Thermal Rating of Underground Cables and Transformers",
+      doi: "10.1109/tsg.2023.3266782",
       authors: "Li, Y., Chen, Q., Strbac, G., Hur, K., Kang, C.",
       venue: "IEEE Transactions on Smart Grid, Vol. 15, No. 1, pp. 218-232 (2024)",
       tags: ["recent"],
@@ -329,6 +350,7 @@ window.labData = {
     {
       year: "2024",
       title: "Interleaving Clusters of Submodules to Enhance Scalability of Modular Multilevel Converters for High-Voltage Applications",
+      doi: "10.1109/tpwrd.2023.3291403",
       authors: "Na, J., Kim, H., Kim, S., Kim, C.-K., Mantooth, H.A., Hur, K.",
       venue: "IEEE Transactions on Power Delivery (2024)",
       tags: ["recent"],
@@ -336,6 +358,7 @@ window.labData = {
     {
       year: "2023",
       title: "An improved high-accuracy interpolation method for switching devices in EMT simulation programs",
+      doi: "10.1016/j.epsr.2023.109630",
       authors: "Na, J., Kim, H., Zhao, H., Gole, A.M., Hur, K.",
       venue: "Electric Power Systems Research, Vol. 223 (Oct 2023)",
       tags: ["2023"],
@@ -343,6 +366,7 @@ window.labData = {
     {
       year: "2023",
       title: "Dynamic Performance Modeling and Analysis of Power Grids With High Levels of Stochastic and Power Electronic Interfaced Resources",
+      doi: "10.1109/jproc.2023.3284890",
       authors: "Kim, J.-K., Kang, J., Shim, J.W., Kim, H., Shin, J., Kang, C., Hur, K.",
       venue: "Proceedings of the IEEE, Vol. 111, No. 7, pp. 854-872 (2023)",
       tags: ["2023"],
@@ -350,6 +374,7 @@ window.labData = {
     {
       year: "2022",
       title: "Estimation of Structural Mechanical Damping in Multi-mass of Turbine Generator for SSTI Study",
+      doi: "10.1007/s42835-022-01045-y",
       authors: "Shin, W., Ko, M.-S., Ku, H.K., Song, J., Hur, K.",
       venue: "Journal of Electrical Engineering & Technology, Vol. 17, No. 3 (May 2022)",
       tags: ["2022"],
@@ -357,6 +382,7 @@ window.labData = {
     {
       year: "2022",
       title: "Feedforward Error Learning Deep Neural Networks for Multivariate Deterministic Power Forecasting",
+      doi: "10.1109/TII.2022.3160628",
       authors: "Ko, M.-S., Lee, K., Hur, K.",
       venue: "IEEE Transactions on Industrial Informatics, Vol. 18, No. 2 (Mar 2022)",
       tags: ["2022"],
@@ -364,6 +390,7 @@ window.labData = {
     {
       year: "2021",
       title: "Generic Analysis Framework for Modular Multilevel Converter HVDC with Multi-Infeed Line-Commutated Converter HVDC System",
+      doi: "10.3390/en15010184",
       authors: "Kim, S., Hur, K., Na, J., Yoon, Y., Kim, H.",
       venue: "Energies, Vol. 15, No. 1 (Dec 2021)",
       tags: ["2021"],
@@ -371,6 +398,7 @@ window.labData = {
     {
       year: "2021",
       title: "A GAN-Enhanced Ensemble Model for Energy Consumption Forecasting in Large Commercial Buildings",
+      doi: "10.1109/ACCESS.2021.3131185",
       authors: "Wu, D., Hur, K., Xiao, Z.",
       venue: "IEEE Access, Vol. 9 (Nov 2021)",
       tags: ["2021"],
@@ -378,6 +406,7 @@ window.labData = {
     {
       year: "2021",
       title: "Grid-supportive Electric Vehicle Charging Methodology with Energy Management for Coordinated Frequency Control",
+      doi: "10.1049/gtd2.12267",
       authors: "Shim, J.W., Verbic, G., Hur, K.",
       venue: "IET Generation, Transmission & Distribution (Aug 2021)",
       tags: ["2021"],
@@ -385,6 +414,7 @@ window.labData = {
     {
       year: "2021",
       title: "Deep Concatenated Residual Network With Bidirectional LSTM for One-Hour-Ahead Wind Power Forecasting",
+      doi: "10.1109/TSTE.2020.3043884",
       authors: "Ko, M.-S., Lee, K., Kim, J.-K., Hong, C.W., Dong, Z.Y., Hur, K.",
       venue: "IEEE Transactions on Sustainable Energy, Vol. 12, No. 2 (Apr 2021)",
       tags: ["2021"],
@@ -392,6 +422,7 @@ window.labData = {
     {
       year: "2021",
       title: "Understanding and Evaluating Systemwide Impacts of Uncertain Parameters in the Dynamic Load Model on Short-Term Voltage Stability",
+      doi: "10.1109/TPWRS.2020.3027692",
       authors: "Kim, J.-K., Lee, B., Ma, J., Verbic, G., Nam, S., Hur, K.",
       venue: "IEEE Transactions on Power Systems, Vol. 36, No. 3 (May 2021)",
       tags: ["2021"],
@@ -399,6 +430,7 @@ window.labData = {
     {
       year: "2020",
       title: "DC Power Control Strategy of MMC for Commutation Failure Prevention in Hybrid Multi-Terminal HVDC System",
+      doi: "10.1109/ACCESS.2020.3027699",
       authors: "Lee, C., Shim, J., Kim, H., Hur, K.",
       venue: "IEEE Access, Vol. 8, pp. 180576-180586 (Oct 2020)",
       tags: ["2020"],
@@ -406,6 +438,7 @@ window.labData = {
     {
       year: "2020",
       title: "Stochastic Eigenanalysis of Electric Power System with High Renewable Penetration: Impact of Changing Inertia on Oscillatory Modes",
+      doi: "10.1109/TPWRS.2020.3000577",
       authors: "Shim, J., Verbic, G., Hur, K.",
       venue: "IEEE Transactions on Power Systems, Vol. 35, No. 6 (Nov 2020)",
       tags: ["2020"],
@@ -413,6 +446,7 @@ window.labData = {
     {
       year: "2020",
       title: "Evaluating the Influence of Momentary Cessation Mode in Inverter-Based Distributed Generators on Power System Transient Stability",
+      doi: "10.1109/TPWRS.2019.2942349",
       authors: "Shin, H., Jung, J., Oh, S., Hur, K., Iba, K., Lee, B.",
       venue: "IEEE Transactions on Power Systems, Vol. 35, No. 2 (Mar 2020)",
       tags: ["2020"],
@@ -420,6 +454,7 @@ window.labData = {
     {
       year: "2019",
       title: "On Droop Control of Energy-Constrained Battery Energy Storage Systems for Grid Frequency Regulation",
+      doi: "10.1109/ACCESS.2019.2953479",
       authors: "Shim, J., Verbic, G., Kim, H., Hur, K.",
       venue: "IEEE Access, Vol. 7, No. 1, pp. 166353-166364 (Dec 2019)",
       tags: ["2019"],
@@ -427,6 +462,7 @@ window.labData = {
     {
       year: "2019",
       title: "Exploiting Redundant Energy of MMC-HVDC to Enhance Frequency Response of Low Inertia AC Grid",
+      doi: "10.1109/ACCESS.2019.2942852",
       authors: "Kim, H., Kang, J., Shim, J.W., Beerten, J., Van Hertem, D., Jung, H., Kim, C., Hur, K.",
       venue: "IEEE Access, Vol. 7 (Sep 2019)",
       tags: ["2019"],
@@ -434,6 +470,7 @@ window.labData = {
     {
       year: "2019",
       title: "Smart and Green Substation: Shaping the Electric Power Grid of Korea",
+      doi: "10.1109/MPE.2019.2909792",
       authors: "Kim, H., Kim, J.-K., Song, J., Lee, J., Han, K., Shin, J., Kim, T., Hur, K.",
       venue: "IEEE Power and Energy Magazine, Vol. 17, No. 4 (Jun 2019)",
       tags: ["2019"],
@@ -441,6 +478,7 @@ window.labData = {
     {
       year: "2019",
       title: "Expanding Power Systems in the Republic of Korea: Feasibility Studies and Future Challenges",
+      doi: "10.1109/MPE.2019.2896690",
       authors: "Kim, S., Kim, H., Lee, H., Lee, J., Lee, B., Jang, G., Lan, X., Kim, T., Jeon, D., Kim, Y., Lee, J., Hur, K.",
       venue: "IEEE Power and Energy Magazine, Vol. 17, No. 3 (Apr 2019)",
       tags: ["2019"],
@@ -448,6 +486,7 @@ window.labData = {
     {
       year: "2019",
       title: "Incorporating the State-of-Charge Balancing into the Control of Energy Storage Systems for Smoothing the Renewable Intermittency",
+      doi: "10.3390/en12071190",
       authors: "Shim, J., Kim, H., Hur, K.",
       venue: "Energies, Vol. 12, No. 7 (Mar 2019)",
       tags: ["2019"],
@@ -455,6 +494,7 @@ window.labData = {
     {
       year: "2019",
       title: "A computationally efficient method for bounding impacts of multiple uncertain parameters in dynamic load models",
+      doi: "10.1109/TPWRS.2018.2879102",
       authors: "Kim, J.-K., Ma, J., Sun, K., Lee, J., Shin, J., Kim, Y., Hur, K.",
       venue: "IEEE Transactions on Power Systems, Vol. 34, No. 2 (Mar 2019)",
       tags: ["2019"],
@@ -462,6 +502,7 @@ window.labData = {
     {
       year: "2019",
       title: "On Exploiting Active Redundancy of Modular Multilevel Converter to Balance Reliability and Operational Flexibility",
+      doi: "10.1109/TPEL.2018.2846406",
       authors: "Kang, J., Kim, H., Jung, H., Lee, D., Kim, C., Mantooth, A., Hur, K.",
       venue: "IEEE Transactions on Power Electronics, Vol. 34, No. 3 (Mar 2019)",
       tags: ["2019"],
@@ -469,6 +510,7 @@ window.labData = {
     {
       year: "2018",
       title: "Improvement in policy and proactive interconnection procedure for renewable energy expansion in South Korea",
+      doi: "10.1016/j.rser.2018.09.013",
       authors: "Kim, S., Lee, H., Kim, H., Jang, D.-H., Kim, H.-J., Hur, J., Cho, Y.-S., Hur, K.",
       venue: "Renewable and Sustainable Energy Reviews, Vol. 98 (Dec 2018)",
       tags: ["2018"],
@@ -476,6 +518,7 @@ window.labData = {
     {
       year: "2018",
       title: "Harmonious Integration of Faster-Acting Energy Storage Systems into Frequency Control Reserves in Power Grid with High Renewable Generation",
+      doi: "10.1109/TPWRS.2018.2836157",
       authors: "Shim, J., Verbic, G., Zhang, N., Hur, K.",
       venue: "IEEE Transactions on Power Systems, Vol. 33, No. 6 (Nov 2018)",
       tags: ["2018"],
@@ -483,6 +526,7 @@ window.labData = {
     {
       year: "2018",
       title: "Computing Safety Margins of a Generation Rejection Scheme: A Framework for Online Implementation",
+      doi: "10.1109/TSG.2016.2635687",
       authors: "Min, D., Kim, S.J., Seo, S., Moon, Y.H., Sun, K., Chow, J.H., Hur, K.",
       venue: "IEEE Transactions on Smart Grid, Vol. 9, No. 3 (May 2018)",
       tags: ["2018"],
@@ -490,6 +534,7 @@ window.labData = {
     {
       year: "2017",
       title: "Impedance-Based Stability Analysis in Grid Interconnection Impact Study Owing to the Increased Adoption of Converter-Interfaced Generators",
+      doi: "10.3390/en10091355",
       authors: "Cho, Y., Hur, K., Kang, C., Muljadi, E.",
       venue: "Energies, Vol. 10, No. 9 (Sep 2017)",
       tags: ["earlier"],
@@ -497,6 +542,7 @@ window.labData = {
     {
       year: "2017",
       title: "Incorporating charging/discharging strategy of electric vehicles into security-constrained optimal power flow to support high renewable penetration",
+      doi: "10.3390/en10050729",
       authors: "An, K., Song, K.-B., Hur, K.",
       venue: "Energies, Vol. 10, No. 5 (May 2017)",
       tags: ["earlier"],
@@ -504,6 +550,7 @@ window.labData = {
     {
       year: "2016",
       title: "Evaluation of Conservation Voltage Reduction with Analytic Hierarchy Process: A Decision Support Framework in Grid Operations Planning",
+      doi: "10.3390/en9121074",
       authors: "An, K., Liu, H.J., Zhu, H., Dong, Z.Y., Hur, K.",
       venue: "Energies, Vol. 9, No. 12 (Dec 2016)",
       tags: ["earlier"],
@@ -511,6 +558,7 @@ window.labData = {
     {
       year: "2016",
       title: "Stable Adaptive Inertial Control of a Doubly-Fed Induction Generator",
+      doi: "10.1109/TSG.2016.2559506",
       authors: "Kang, M., Muljadi, E., Hur, K., Kang, Y.C.",
       venue: "IEEE Transactions on Smart Grid, Vol. 7, No. 6 (Nov 2016)",
       tags: ["earlier"],
@@ -518,6 +566,7 @@ window.labData = {
     {
       year: "2016",
       title: "A Framework to Analyze the Stochastic Harmonics and Resonance of Wind Energy Grid Interconnection",
+      doi: "10.3390/en9090700",
       authors: "Cho, Y., Lee, C., Hur, K., Kang, Y.C., Muljadi, E., Park, S.-H., Choy, Y.-D., Yoon, G.-G.",
       venue: "Energies, Vol. 9, No. 9 (Aug 2016)",
       tags: ["earlier"],
@@ -525,6 +574,7 @@ window.labData = {
     {
       year: "2016",
       title: "Operating Region of Modular Multilevel Converter for HVDC With Controlled Second-Order Harmonic Circulating Current: Elaborating P-Q Capability",
+      doi: "10.1109/TPWRD.2015.2458038",
       authors: "Kim, H., Kim, S., Chung, Y.-H., Yoo, D.-W., Kim, C.-K., Hur, K.",
       venue: "IEEE Transactions on Power Delivery, Vol. 31, No. 2, pp. 493-502 (Apr 2016)",
       tags: ["earlier"],
@@ -532,6 +582,7 @@ window.labData = {
     {
       year: "2016",
       title: "Reference compensation method for enabling dispatchability of the wind power generation using battery energy storage system",
+      doi: "10.1080/22348972.2015.1106081",
       authors: "Cho, Y., Al-Ammar, E.A., Hur, K.",
       venue: "Journal of International Council on Electrical Engineering, Vol. 6, Issue 1 (Jan 2016)",
       tags: ["earlier"],
@@ -539,6 +590,7 @@ window.labData = {
     {
       year: "2016",
       title: "Fast and reliable estimation of composite load model parameters using analytical similarity of parameter sensitivity",
+      doi: "10.1109/TPWRS.2015.2409116",
       authors: "Kim, J.-K., An, K., Ma, J., Shin, J., Song, K.-B., Park, J.-D., Park, J.-W., Hur, K.",
       venue: "IEEE Transactions on Power Systems, Vol. 31, No. 1, pp. 663-671 (Jan 2016)",
       tags: ["earlier"],
@@ -546,6 +598,7 @@ window.labData = {
     {
       year: "2014",
       title: "Improvement of Composite Load Modeling Based on Parameter Sensitivity and Dependency Analyses",
+      doi: "10.1109/TPWRS.2013.2281455",
       authors: "Son, S., Lee, S.H., Choi, D.H., Song, K.B., Park, J.D., Kwon, Y.H., Hur, K., Park, J.W.",
       venue: "IEEE Transactions on Power Systems, Vol. 29, No. 2 (Feb 2014)",
       tags: ["earlier"],
@@ -553,6 +606,7 @@ window.labData = {
     {
       year: "2014",
       title: "수퍼그리드 적용을 위한 멀티터미널 HVDC 및 DC 그리드",
+      paper: "https://scienceon.kisti.re.kr/srch/selectPORSrchArticle.do?cn=JAKO201422333818108&dbt=NART",
       authors: "Hur, K.",
       venue: "전기의 세계, Vol. 63, No. 7 (2014)",
       tags: ["earlier"],
@@ -560,6 +614,7 @@ window.labData = {
     {
       year: "2013",
       title: "Load Forecast Model Switching Scheme for Improved Robustness to Changes in Building Energy Consumption Patterns",
+      doi: "10.3390/en6031329",
       authors: "Yoo, J., Hur, K.",
       venue: "Energies, Vol. 6, No. 3, p. 1329 (Mar 2013)",
       tags: ["earlier"],
@@ -567,6 +622,7 @@ window.labData = {
     {
       year: "2013",
       title: "A Novel and Smart Design of Superconducting Fault Current Controller: Implementation and Verification for Various Fault Conditions",
+      doi: "10.1109/TASC.2012.2230292",
       authors: "Nam, T., Shim, J., Hur, K.",
       venue: "IEEE Transactions on Applied Superconductivity, Vol. 23, No. 3, p. 5701004 (Jun 2013)",
       tags: ["earlier"],
@@ -574,6 +630,7 @@ window.labData = {
     {
       year: "2013",
       title: "Synergistic Control of SMES and Battery Energy Storage for Enabling Dispatchability of Renewable Energy Sources",
+      doi: "10.1109/TASC.2013.2241385",
       authors: "Shim, J., Cho, Y., Kim, S., Min, S., Hur, K.",
       venue: "IEEE Transactions on Applied Superconductivity, Vol. 23, No. 3, p. 5701205 (Jun 2013)",
       tags: ["earlier"],
@@ -581,6 +638,7 @@ window.labData = {
     {
       year: "2013",
       title: "Assessment of Improved Power Quality due to Fault Current Limiting HTS Cable",
+      doi: "10.1109/TASC.2012.2235500",
       authors: "Kim, H., Shim, J., Sim, K., Hur, K.",
       venue: "IEEE Transactions on Applied Superconductivity, Vol. 23, No. 3, p. 5602104 (Jun 2013)",
       tags: ["earlier"],
@@ -588,6 +646,7 @@ window.labData = {
     {
       year: "2013",
       title: "On the Reclose Operation of Superconducting Fault Current Controller for Smart Power Grid with Increasing Distributed Generation",
+      doi: "10.1109/TASC.2012.2235115",
       authors: "Shim, J., Nam, T., Kim, S., Hur, K.",
       venue: "IEEE Transactions on Applied Superconductivity, Vol. 23, No. 3, p. 5603004 (Jun 2013)",
       tags: ["earlier"],
@@ -595,6 +654,7 @@ window.labData = {
     {
       year: "2012",
       title: "Visions, Scenarios and Action Plans Towards Next Generation Tanzania Power System",
+      doi: "10.3390/en5103908",
       authors: "Kihwele, S., Hur, K., Kyaruzi, A.",
       venue: "Energies (Oct 2012)",
       tags: ["earlier"],
@@ -602,6 +662,7 @@ window.labData = {
     {
       year: "2012",
       title: "Signal Processing Techniques for Estimating Power System Modal Parameters",
+      doi: "10.1142/S0218126612400191",
       authors: "Min, D., Heo, J., Yoo, J., Hur, K.",
       venue: "Journal of Circuits, Systems, and Computers, Vol. 21, No. 6 (Nov 2012)",
       tags: ["earlier"],
@@ -609,6 +670,7 @@ window.labData = {
     {
       year: "2012",
       title: "Setting Parameters of the Analytic Wavelet Transforms for Estimating Electric Power System Damping Parameters",
+      doi: "10.1109/TPWRD.2012.2202203",
       authors: "Min, D., Heo, J., Hur, K., Santoso, S.",
       venue: "IEEE Transactions on Power Delivery, Vol. 27, No. 4, p. 2409 (Oct 2012)",
       tags: ["earlier"],
@@ -616,6 +678,7 @@ window.labData = {
     {
       year: "2012",
       title: "Design and Control of a Modular Multilevel HVDC Converter with Redundant Power Modules for Non-Interruptible Energy",
+      doi: "10.1109/TPWRD.2012.2190530",
       authors: "Son, G., Lee, H., Nam, T., Chung, Y., Lee, U., Baek, S., Hur, K., Park, J.",
       venue: "IEEE Transactions on Power Delivery, p. 1611 (Jul 2012)",
       tags: ["earlier"],
@@ -623,6 +686,7 @@ window.labData = {
     {
       year: "2012",
       title: "The Beneficial Role of SMES Coil in DC Lines as an Energy Buffer for Integrating Large Scale Wind Power",
+      doi: "10.1109/TASC.2011.2175686",
       authors: "Nam, T., Shim, J., Hur, K.",
       venue: "IEEE Transactions on Applied Superconductivity, Vol. 22, No. 3, p. 5701404 (Jun 2012)",
       tags: ["earlier"],
@@ -630,6 +694,7 @@ window.labData = {
     {
       year: "2012",
       title: "Expanded Adoption of HTS Cables in a Metropolitan Area and Its Potential Impact on the Neighboring Electric Power Grid",
+      doi: "10.1109/TASC.2011.2176700",
       authors: "Kim, H., Hur, K.",
       venue: "IEEE Transactions on Applied Superconductivity, Vol. 22, No. 3, p. 5800704 (Jun 2012)",
       tags: ["earlier"],
@@ -637,6 +702,7 @@ window.labData = {
     {
       year: "2012",
       title: "Towards a Self-Healing Electric Grid with Superconducting Fault Current Controllers",
+      doi: "10.1109/TASC.2011.2175872",
       authors: "Shim, J., Nam, T., Jang, J., Ko, T., Ahn, M., Hur, K.",
       venue: "IEEE Transactions on Applied Superconductivity, Vol. 22, No. 3, p. 5600904 (Jun 2012)",
       tags: ["earlier"],
@@ -644,6 +710,7 @@ window.labData = {
     {
       year: "2012",
       title: "Look-ahead Energy Management of a Grid-connected Residential PV System with Energy Storage under Time-based Rate Programs",
+      doi: "10.3390/en5041116",
       authors: "Yoo, J., Park, B., An, K., Al-Ammar, E.A., Khan, Y., Hur, K., Kim, J.",
       venue: "Energies, p. 1116 (May 2012)",
       tags: ["earlier"],
@@ -651,6 +718,7 @@ window.labData = {
     {
       year: "2011",
       title: "A New Unified Scheme for Controlled Power System Separation Using Synchronized Phasor Measurements",
+      doi: "10.1109/TPWRS.2010.2099672",
       authors: "Sun, K., Hur, K., Zhang, P.",
       venue: "IEEE Transactions on Power Systems, p. 1544 (Aug 2011)",
       tags: ["earlier"],
@@ -658,6 +726,7 @@ window.labData = {
     {
       year: "2010",
       title: "High-Wire Act: ERCOT balances transmission flows for Texas-size savings using its dynamic ratings application",
+      doi: "10.1109/MPE.2009.934878",
       authors: "Hur, K., Boddeti, M., Sarma, NDR., Dumas, J., Adams, J., Chai, S.K.",
       venue: "IEEE Power and Energy Magazine, pp. 37-45 (Jan/Feb 2010)",
       tags: ["earlier"],
@@ -665,6 +734,7 @@ window.labData = {
     {
       year: "2009",
       title: "Estimation of system damping parameters using analytic wavelet transforms",
+      doi: "10.1109/TPWRD.2008.2002970",
       authors: "Hur, K., Santoso, S.",
       venue: "IEEE Transactions on Power Delivery, Vol. 24, No. 3, pp. 1302-1309 (Jul 2009)",
       tags: ["earlier"],
@@ -672,6 +742,7 @@ window.labData = {
     {
       year: "2008",
       title: "On two fundamental signatures of shunt capacitor bank energizing for determining the relative location of switched capacitor banks",
+      doi: "10.1109/TPWRD.2008.917669",
       authors: "Hur, K., Santoso, S.",
       venue: "IEEE Transactions on Power Delivery, Vol. 23, No. 2, pp. 2419-2427 (Apr 2008)",
       tags: ["earlier"],
@@ -679,6 +750,7 @@ window.labData = {
     {
       year: "2007",
       title: "Distance estimation of switched capacitor bank in utility distribution feeders",
+      doi: "10.1109/TPWRD.2007.905542",
       authors: "Hur, K., Santoso, S.",
       venue: "IEEE Transactions on Power Delivery, Vol. 22, No. 4, pp. 2419-2427 (Oct 2007)",
       tags: ["earlier"],
@@ -686,6 +758,7 @@ window.labData = {
     {
       year: "2007",
       title: "On the empirical estimation of utility distribution damping parameters using power quality waveform data",
+      doi: "10.1155/2007/95328",
       authors: "Hur, K., Santoso, S., Gu, I.H.",
       venue: "EURASIP Journal on Advances in Signal Processing, Vol. 2007, Article ID 95328",
       tags: ["earlier"],
@@ -693,6 +766,7 @@ window.labData = {
     {
       year: "2006",
       title: "An improved method to estimate empirical system parallel resonant frequencies using capacitor switching transient data",
+      doi: "10.1109/TPWRD.2006.874559",
       authors: "Hur, K., Santoso, S.",
       venue: "IEEE Transactions on Power Delivery, Vol. 21, No. 3, pp. 1751-1753 (Jul 2006)",
       tags: ["earlier"],
